@@ -1,4 +1,4 @@
 Tron
 ====
 
-A DSL for creating finite state machines in Java
+A DSL for creating Finite State Machines
