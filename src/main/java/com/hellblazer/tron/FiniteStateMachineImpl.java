@@ -103,6 +103,7 @@ final class FiniteStateMachineImpl<Transitions extends FiniteStateMachine<? supe
         try {
             State nextState = (State) stateTransition.invoke(current, arguments);
             if (nextState != null) {
+                executeExitAction();
                 current = nextState;
                 executeEntryAction();
             }
@@ -128,8 +129,31 @@ final class FiniteStateMachineImpl<Transitions extends FiniteStateMachine<? supe
     }
 
     private void executeEntryAction() {
-        // TODO Auto-generated method stub
+        for (Method action : current.getClass().getDeclaredMethods()) {
+            if (action.isAnnotationPresent(EntryAction.class)) {
+                try {
+                    action.invoke(current, new Object[] {});
+                    return;
+                } catch (IllegalAccessException | IllegalArgumentException
+                        | InvocationTargetException e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+        }
+    }
 
+    private void executeExitAction() {
+        for (Method action : current.getClass().getDeclaredMethods()) {
+            if (action.isAnnotationPresent(ExitAction.class)) {
+                try {
+                    action.invoke(current, new Object[] {});
+                    return;
+                } catch (IllegalAccessException | IllegalArgumentException
+                        | InvocationTargetException e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+        }
     }
 
     private void pop(FiniteStateMachineImpl<? extends FiniteStateMachine<?>, ?> previous) {
@@ -150,6 +174,7 @@ final class FiniteStateMachineImpl<Transitions extends FiniteStateMachine<? supe
     @Override
     public void pop() {
         previous = current;
+        executeExitAction();
         try {
             current = stack.pop();
         } catch (NoSuchElementException e) {
