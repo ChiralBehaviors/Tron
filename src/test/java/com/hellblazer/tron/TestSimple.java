@@ -45,5 +45,6 @@ public class TestSimple {
         BufferHandler handler = new BufferHandler();
         fsm.accepted(handler);
         assertEquals(handler, protocol.getHandler());
+        assertEquals(SimpleServer.ACCEPTED, fsm.getCurrentState());
     }
 }
