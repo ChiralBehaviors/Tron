@@ -13,13 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.hellblazer.tron;
+package com.hellblazer.tron.example;
+
+import com.hellblazer.tron.FiniteStateMachine;
+import com.hellblazer.tron.State;
 
 /**
  * 
  * @author hhildebrand
  * 
  */
-public enum SimpleClient implements State {
-    CONNECTED
+public interface SimpleFsm extends FiniteStateMachine<SimpleProtocol> {
+    State accepted(BufferHandler buffer);
+
+    State connected(BufferHandler buffer);
+
+    State closing();
+
+    State readError();
+
+    State writeError();
+
+    State protocolError();
 }

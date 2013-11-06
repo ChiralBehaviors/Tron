@@ -13,23 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.hellblazer.tron;
+package com.hellblazer.tron.example.stateMaps;
+
+import com.hellblazer.tron.State;
 
 /**
  * 
  * @author hhildebrand
- * 
+ *
  */
-public interface SimpleFsm extends FiniteStateMachine<SimpleProtocol> {
-    State accepted(Object buffer);
-
-    State connected(Object buffer);
-
-    State closing();
-
-    State readError();
-
-    State writeError();
-
-    State protocolError();
+public enum SimpleServer implements State {
+    ACCEPTED
 }

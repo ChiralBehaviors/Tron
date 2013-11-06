@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.hellblazer.tron;
+package com.hellblazer.tron.example.stateMaps;
+
+import com.hellblazer.tron.State;
 
 /**
  * 
  * @author hhildebrand
  * 
  */
-public interface SimpleProtocol {
-
+public enum SimpleClient implements State {
+    CONNECTED
 }

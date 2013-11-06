@@ -5,7 +5,9 @@ public interface FiniteStateMachine<Context> {
 
     void pop();
 
-    State current();
+    State getCurrentState();
+
+    void setCurrentState(State state);
 
     State previous();
 
@@ -13,4 +15,5 @@ public interface FiniteStateMachine<Context> {
 
     Context getContext();
 
+    void enterStartState();
 }

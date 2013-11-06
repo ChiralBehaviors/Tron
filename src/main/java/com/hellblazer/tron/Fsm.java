@@ -23,22 +23,28 @@ import java.lang.reflect.Proxy;
  * 
  */
 public final class Fsm {
+    @SafeVarargs
     public static <Context, T extends FiniteStateMachine<? super Context>> T construct(Context fsmContext,
-                                                                               Class<T> transitions,
-                                                                               boolean sync,
-                                                                               @SuppressWarnings("unchecked") Class<? extends State>... stateMaps) {
+                                                                                       Class<T> transitions,
+                                                                                       State initialState,
+                                                                                       boolean sync,
+                                                                                       Class<? extends State>... stateMaps) {
         FiniteStateMachineImpl<T, ? extends Context> fsm = new FiniteStateMachineImpl<>(
-                                                                              fsmContext,
-                                                                              sync);
+                                                                                        fsmContext,
+                                                                                        sync);
+        fsm.setCurrentState(initialState);
         Class<?> fsmContextClass = fsmContext.getClass();
         @SuppressWarnings("unchecked")
         T proxy = (T) Proxy.newProxyInstance(fsmContextClass.getClassLoader(),
                                              new Class<?>[] { transitions },
                                              fsm.handler);
+        fsm.setProxy(proxy);
         return proxy;
     }
 
     public static <Context, T extends FiniteStateMachine<Context>> T thisFsm() {
-        return FiniteStateMachineImpl.thisFsm();
+        @SuppressWarnings("unchecked")
+        T fsm = (T) FiniteStateMachineImpl.thisFsm.get();
+        return fsm;
     }
 }

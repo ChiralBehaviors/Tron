@@ -13,7 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.hellblazer.tron;
+package com.hellblazer.tron.example.stateMaps;
+
+import com.hellblazer.tron.Fsm;
+import com.hellblazer.tron.State;
+import com.hellblazer.tron.Transition;
+import com.hellblazer.tron.example.BufferHandler;
+import com.hellblazer.tron.example.SimpleFsm;
+import com.hellblazer.tron.example.SimpleProtocol;
 
 /**
  * 
@@ -25,6 +32,7 @@ public enum Simple implements State {
         @Transition
         public State accepted(BufferHandler handler) {
             SimpleFsm fsm = Fsm.thisFsm();
+            fsm.getContext().setHandler(handler);
             fsm.push(SimpleServer.ACCEPTED);
             return CONNECTED;
         }
@@ -32,6 +40,7 @@ public enum Simple implements State {
         @Transition
         public State connected(BufferHandler handler) {
             SimpleFsm fsm = Fsm.thisFsm();
+            fsm.getContext().setHandler(handler);
             fsm.push(SimpleClient.CONNECTED);
             return CONNECTED;
         }

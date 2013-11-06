@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.hellblazer.tron;
+package com.hellblazer.tron.example;
+
 
 /**
  * 
  * @author hhildebrand
- *
+ * 
  */
-public enum SimpleServer implements State {
-    ACCEPTED
+public interface SimpleProtocol {
+    void setHandler(BufferHandler handler);
 }

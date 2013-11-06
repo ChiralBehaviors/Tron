@@ -15,9 +15,17 @@
  */
 package com.hellblazer.tron;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
+
+import com.hellblazer.tron.example.BufferHandler;
+import com.hellblazer.tron.example.SimpleFsm;
+import com.hellblazer.tron.example.impl.SimpleProtocolImpl;
+import com.hellblazer.tron.example.stateMaps.Simple;
+import com.hellblazer.tron.example.stateMaps.SimpleClient;
+import com.hellblazer.tron.example.stateMaps.SimpleServer;
 
 /**
  * 
@@ -27,11 +35,15 @@ import org.junit.Test;
 public class TestSimple {
     @Test
     public void testIt() {
+        SimpleProtocolImpl protocol = new SimpleProtocolImpl();
         @SuppressWarnings("unchecked")
-        SimpleFsm fsm = Fsm.construct(new SimpleProtocolImpl(),
-                                      SimpleFsm.class, true, new Class[] {
+        SimpleFsm fsm = Fsm.construct(protocol, SimpleFsm.class,
+                                      Simple.INITIAL, true, new Class[] {
                                               Simple.class, SimpleServer.class,
                                               SimpleClient.class });
         assertNotNull(fsm);
+        BufferHandler handler = new BufferHandler();
+        fsm.accepted(handler);
+        assertEquals(handler, protocol.getHandler());
     }
 }
