@@ -20,10 +20,6 @@ package com.hellblazer.tron;
  * @author hhildebrand
  * 
  */
-public class NoTransitionException extends RuntimeException {
+public interface SimpleProtocol {
 
-    private static final long serialVersionUID = 1L;
-
-    public NoTransitionException(State state, String transition) {
-    }
 }

@@ -15,15 +15,17 @@
  */
 package com.hellblazer.tron;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.CLASS;
+
 /**
  * 
  * @author hhildebrand
  * 
  */
-public class NoTransitionException extends RuntimeException {
-
-    private static final long serialVersionUID = 1L;
-
-    public NoTransitionException(State state, String transition) {
-    }
+@Retention(value = CLASS)
+@Target(value = { METHOD })
+public @interface EntryAction { 
 }

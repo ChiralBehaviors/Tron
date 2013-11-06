@@ -15,15 +15,23 @@
  */
 package com.hellblazer.tron;
 
+import static org.junit.Assert.assertNotNull;
+
+import org.junit.Test;
+
 /**
  * 
  * @author hhildebrand
  * 
  */
-public class NoTransitionException extends RuntimeException {
-
-    private static final long serialVersionUID = 1L;
-
-    public NoTransitionException(State state, String transition) {
+public class TestSimple {
+    @Test
+    public void testIt() {
+        @SuppressWarnings("unchecked")
+        SimpleFsm fsm = Fsm.construct(new SimpleProtocolImpl(),
+                                      SimpleFsm.class, true, new Class[] {
+                                              Simple.class, SimpleServer.class,
+                                              SimpleClient.class });
+        assertNotNull(fsm);
     }
 }

@@ -15,11 +15,17 @@
  */
 package com.hellblazer.tron;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.CLASS;
+
 /**
  * 
  * @author hhildebrand
  * 
  */
-public abstract class Action {
-    abstract public void eval();
+@Retention(value = CLASS)
+@Target(value = { METHOD })
+public @interface ExitAction {
 }

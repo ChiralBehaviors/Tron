@@ -20,10 +20,16 @@ package com.hellblazer.tron;
  * @author hhildebrand
  * 
  */
-public class NoTransitionException extends RuntimeException {
+public interface SimpleFsm extends FiniteStateMachine<SimpleProtocol> {
+    State accepted(Object buffer);
 
-    private static final long serialVersionUID = 1L;
+    State connected(Object buffer);
 
-    public NoTransitionException(State state, String transition) {
-    }
+    State closing();
+
+    State readError();
+
+    State writeError();
+
+    State protocolError();
 }

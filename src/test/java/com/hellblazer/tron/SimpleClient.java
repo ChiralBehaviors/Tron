@@ -20,10 +20,6 @@ package com.hellblazer.tron;
  * @author hhildebrand
  * 
  */
-public class NoTransitionException extends RuntimeException {
-
-    private static final long serialVersionUID = 1L;
-
-    public NoTransitionException(State state, String transition) {
-    }
+public enum SimpleClient implements State {
+    CONNECTED
 }

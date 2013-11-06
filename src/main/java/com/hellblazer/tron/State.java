@@ -15,60 +15,11 @@
  */
 package com.hellblazer.tron;
 
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 
  * @author hhildebrand
  * 
  */
-public class State<T> {
-    private Action                           entry;
-    private Action                           exit;
-    private final String                     name;
-    private final Map<String, Transition<T>> transitions = new HashMap<>();
-
-    public State(String name) {
-        this.name = name;
-    }
-
-    public Action entry() {
-        return entry;
-    }
-
-    public void entry(Action entry) {
-        this.entry = entry;
-    }
-
-    public Action exit() {
-        return exit;
-    }
-
-    public void exit(Action exit) {
-        this.exit = exit;
-    }
-
-    public String name() {
-        return name;
-    }
-
-    public Map<String, Transition<T>> transitions() {
-        return transitions;
-    }
-
-    public Transition<T> getTransition(String transition) {
-        return transitions.get(transition);
-    }
-
-    public Transition<T> transition(Transition<T> transition) {
-        if (transitions.containsKey(transition.name())) {
-            throw new IllegalArgumentException(
-                                               String.format("State '%s' already defines transition '%s'",
-                                                             name,
-                                                             transition.name()));
-        }
-        transitions.put(transition.name(), transition);
-        return transition;
-    }
+public interface State {
 }

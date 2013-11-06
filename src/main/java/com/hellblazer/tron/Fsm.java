@@ -15,102 +15,30 @@
  */
 package com.hellblazer.tron;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Semaphore;
-
-import org.slf4j.Logger;
+import java.lang.reflect.Proxy;
 
 /**
  * 
  * @author hhildebrand
  * 
  */
-public class Fsm<T> {
-    private State<T>                       currentState;
-    private Logger                         log;
-    private final Map<String, StateMap<T>> machines = new HashMap<>();
-    private String                         name;
-    private State<T>                       previousState;
-    private final List<State<T>>           stack    = new ArrayList<>();
-    @SuppressWarnings("unused")
-    private final Semaphore                sync;
-    private Transition<T>                  transition;
-
-    public Fsm(boolean synchronizeTransitions) {
-        if (synchronizeTransitions) {
-            sync = new Semaphore(1);
-        } else {
-            sync = null;
-        }
+public final class Fsm {
+    public static <Context, T extends FiniteStateMachine<? super Context>> T construct(Context fsmContext,
+                                                                               Class<T> transitions,
+                                                                               boolean sync,
+                                                                               @SuppressWarnings("unchecked") Class<? extends State>... stateMaps) {
+        FiniteStateMachineImpl<T, ? extends Context> fsm = new FiniteStateMachineImpl<>(
+                                                                              fsmContext,
+                                                                              sync);
+        Class<?> fsmContextClass = fsmContext.getClass();
+        @SuppressWarnings("unchecked")
+        T proxy = (T) Proxy.newProxyInstance(fsmContextClass.getClassLoader(),
+                                             new Class<?>[] { transitions },
+                                             fsm.handler);
+        return proxy;
     }
 
-    public State<T> currentState() {
-        return currentState;
-    }
-
-    public void currentState(State<T> state) {
-        currentState = state;
-    }
-
-    public Logger log() {
-        return log;
-    }
-
-    public void log(Logger log) {
-        this.log = log;
-    }
-
-    public Map<String, StateMap<T>> machines() {
-        return machines;
-    }
-
-    public String name() {
-        return name;
-    }
-
-    public void name(String name) {
-        this.name = name;
-    }
-
-    public State<T> previousState() {
-        return previousState;
-    }
-
-    public void previousState(State<T> state) {
-        previousState = state;
-    }
-
-    public List<State<T>> stack() {
-        return stack;
-    }
-
-    public Transition<T> transition() {
-        return transition;
-    }
-
-    public void transition(Transition<T> transition) {
-        this.transition = transition;
-    }
-
-    public void fire(String transition, Object... parameters) {
-        Transition<T> next = currentState.getTransition(transition);
-        if (next == null) {
-            throw new NoTransitionException(currentState, transition);
-        }
-        next.evaluate(parameters);
-    }
-
-    public StateMap<?> stateMap(String name) {
-        if (machines.containsKey(name)) {
-            throw new IllegalArgumentException(
-                                               String.format("State Map '%s' is already defined",
-                                                             name));
-        }
-        StateMap<T> map = new StateMap<>(name);
-        machines.put(name, map);
-        return map;
+    public static <Context, T extends FiniteStateMachine<Context>> T thisFsm() {
+        return FiniteStateMachineImpl.thisFsm();
     }
 }

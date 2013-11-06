@@ -18,8 +18,8 @@ package com.hellblazer.tron;
 /**
  * 
  * @author hhildebrand
- * 
+ *
  */
-public interface Guard {
-    boolean eval();
+public enum SimpleServer implements State {
+    ACCEPTED
 }

@@ -15,50 +15,18 @@
  */
 package com.hellblazer.tron;
 
-import java.util.ArrayList;
-import java.util.List;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.CLASS;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
  * 
  * @author hhildebrand
  * 
  */
-public class Transition<T> {
-    private Action            action;
-    private final List<Guard> guards = new ArrayList<>();
-    private String            name;
-    private State<T>          nextState;
-
-    public Action action() {
-        return action;
-    }
-
-    public void action(Action action) {
-        this.action = action;
-    }
-
-    public List<Guard> guards() {
-        return guards;
-    }
-
-    public String name() {
-        return name;
-    }
-
-    public void name(String name) {
-        this.name = name;
-    }
-
-    public State<T> nextState() {
-        return nextState;
-    }
-
-    public void nextState(State<T> nextState) {
-        this.nextState = nextState;
-    }
-
-    protected void evaluate(Object[] parameters) {
-        // TODO Auto-generated method stub
-
-    }
+@Retention(value = CLASS)
+@Target(value = { METHOD })
+public @interface Transition {
 }
