@@ -117,6 +117,7 @@ final class FiniteStateMachineImpl<Context, Transitions> implements
     private void executeEntryAction() {
         for (Method action : current.getClass().getDeclaredMethods()) {
             if (action.isAnnotationPresent(Entry.class)) {
+                action.setAccessible(true);
                 try {
                     action.invoke(current, new Object[] {});
                     return;
@@ -131,6 +132,7 @@ final class FiniteStateMachineImpl<Context, Transitions> implements
     private void executeExitAction() {
         for (Method action : current.getClass().getDeclaredMethods()) {
             if (action.isAnnotationPresent(Exit.class)) {
+                action.setAccessible(true);
                 try {
                     action.invoke(current, new Object[] {});
                     return;
