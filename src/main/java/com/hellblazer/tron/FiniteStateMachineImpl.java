@@ -38,8 +38,8 @@ final class FiniteStateMachineImpl<Context, Transitions> implements
 
     static final ThreadLocal<Object>                 thisFsm = new ThreadLocal<>();
 
-    private State                                    pendingPush;
-    private State                                    current;
+    private Enum<?>                                  pendingPush;
+    private Enum<?>                                  current;
     final InvocationHandler                          handler = new InvocationHandler() {
 
                                                                  @Override
@@ -52,10 +52,10 @@ final class FiniteStateMachineImpl<Context, Transitions> implements
                                                                  }
                                                              };
     private FiniteStateMachine<Context, Transitions> proxy;
-    private State                                    previous;
+    private Enum<?>                                  previous;
     private String                                   transition;
     private final Lock                               sync;
-    private final Deque<State>                       stack   = new ArrayDeque<>();
+    private final Deque<Enum<?>>                     stack   = new ArrayDeque<>();
     private final Context                            context;
 
     FiniteStateMachineImpl(Context context, boolean sync) {
@@ -104,7 +104,8 @@ final class FiniteStateMachineImpl<Context, Transitions> implements
         previous = current;
         transition = t.toGenericString();
         try {
-            State nextState = (State) stateTransition.invoke(current, arguments);
+            Enum<?> nextState = (Enum<?>) stateTransition.invoke(current,
+                                                                 arguments);
             if (nextState != null) {
                 executeExitAction();
                 current = nextState;
@@ -170,7 +171,7 @@ final class FiniteStateMachineImpl<Context, Transitions> implements
     }
 
     @Override
-    public void push(State state) {
+    public void push(Enum<?> state) {
         pendingPush = state;
     }
 
@@ -186,12 +187,12 @@ final class FiniteStateMachineImpl<Context, Transitions> implements
     }
 
     @Override
-    public State getCurrentState() {
+    public Enum<?> getCurrentState() {
         return current;
     }
 
     @Override
-    public State previous() {
+    public Enum<?> previous() {
         return previous;
     }
 
@@ -206,7 +207,7 @@ final class FiniteStateMachineImpl<Context, Transitions> implements
     }
 
     @Override
-    public void setCurrentState(State state) {
+    public void setCurrentState(Enum<?> state) {
         current = state;
     }
 

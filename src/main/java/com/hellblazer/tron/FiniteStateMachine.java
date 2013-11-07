@@ -1,15 +1,15 @@
 package com.hellblazer.tron;
 
 public interface FiniteStateMachine<Context, Transitions> {
-    void push(State state);
+    void push(Enum<?> state);
 
     void pop();
 
-    State getCurrentState();
+    Enum<?> getCurrentState();
 
-    void setCurrentState(State state);
+    void setCurrentState(Enum<?> state);
 
-    State previous();
+    Enum<?> previous();
 
     String transition();
 

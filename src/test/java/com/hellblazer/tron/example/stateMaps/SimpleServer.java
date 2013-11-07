@@ -15,13 +15,75 @@
  */
 package com.hellblazer.tron.example.stateMaps;
 
-import com.hellblazer.tron.State;
+import com.hellblazer.tron.example.BufferHandler;
+import com.hellblazer.tron.example.SimpleFsm;
+
 
 /**
  * 
  * @author hhildebrand
- *
+ * 
  */
-public enum SimpleServer implements State {
-    ACCEPTED, SESSION_ESTABLISHED,PROCESS_MESSAGE,AWAIT_MESSAGE,
+public enum SimpleServer implements SimpleFsm {
+    ACCEPTED, SESSION_ESTABLISHED, PROCESS_MESSAGE, AWAIT_MESSAGE,;
+
+    @Override
+    public Enum<?> accepted(BufferHandler buffer) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Enum<?> connected(BufferHandler buffer) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Enum<?> closing() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Enum<?> readError() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Enum<?> writeError() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Enum<?> protocolError() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Enum<?> sendGoodbye() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Enum<?> transmitMessage(String message) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Enum<?> writeReady() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Enum<?> readReady() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

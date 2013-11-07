@@ -24,6 +24,6 @@ public class NoTransitionException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
-    public NoTransitionException(State state, String transition) {
+    public NoTransitionException(Enum<?> state, String transition) {
     }
 }

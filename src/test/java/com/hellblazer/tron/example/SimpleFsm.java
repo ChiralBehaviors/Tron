@@ -15,7 +15,6 @@
  */
 package com.hellblazer.tron.example;
 
-import com.hellblazer.tron.State;
 
 /**
  * 
@@ -23,15 +22,23 @@ import com.hellblazer.tron.State;
  * 
  */
 public interface SimpleFsm {
-    State accepted(BufferHandler buffer);
+    Enum<?> accepted(BufferHandler buffer);
 
-    State connected(BufferHandler buffer);
+    Enum<?> connected(BufferHandler buffer);
 
-    State closing();
+    Enum<?> closing();
 
-    State readError();
+    Enum<?> readError();
 
-    State writeError();
+    Enum<?> writeError();
 
-    State protocolError();
+    Enum<?> protocolError();
+
+    Enum<?> sendGoodbye();
+
+    Enum<?> transmitMessage(String message);
+
+    Enum<?> writeReady();
+
+    Enum<?> readReady();
 }

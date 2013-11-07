@@ -17,8 +17,6 @@ package com.hellblazer.tron.example.stateMaps;
 
 import com.hellblazer.tron.FiniteStateMachine;
 import com.hellblazer.tron.Fsm;
-import com.hellblazer.tron.State;
-import com.hellblazer.tron.Transition;
 import com.hellblazer.tron.example.BufferHandler;
 import com.hellblazer.tron.example.SimpleFsm;
 import com.hellblazer.tron.example.SimpleProtocol;
@@ -28,18 +26,18 @@ import com.hellblazer.tron.example.SimpleProtocol;
  * @author hhildebrand
  * 
  */
-public enum Simple implements State {
+public enum Simple implements SimpleFsm {
     INITIAL() {
-        @Transition
-        public State accepted(BufferHandler handler) {
+        @Override
+        public Enum<?> accepted(BufferHandler handler) {
             FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
             fsm.getContext().setHandler(handler);
             fsm.push(SimpleServer.ACCEPTED);
             return CONNECTED;
         }
 
-        @Transition
-        public State connected(BufferHandler handler) {
+        @Override
+        public Enum<?> connected(BufferHandler handler) {
             FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
             fsm.getContext().setHandler(handler);
             fsm.push(SimpleClient.CONNECTED);
@@ -47,18 +45,18 @@ public enum Simple implements State {
         }
     },
     CONNECTED() {
-        @Transition
-        public State closing() {
+        @Override
+        public Enum<?> closing() {
             return CLOSED;
         }
 
-        @Transition
-        public State readError() {
+        @Override
+        public Enum<?> readError() {
             return CLOSED;
         }
 
-        @Transition
-        public State writeError() {
+        @Override
+        public Enum<?> writeError() {
             return CLOSED;
         }
     },
@@ -66,20 +64,61 @@ public enum Simple implements State {
 
     };
 
-    @Transition
-    public State closing() {
+    @Override
+    public Enum<?> accepted(BufferHandler buffer) {
+        return PROTOCOL_ERROR;
+    }
+
+    @Override
+    public Enum<?> closing() {
         FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
         fsm.push(CONNECTED);
-        @SuppressWarnings("unused")
-        SimpleProtocol context = fsm.getContext();
+        fsm.getContext();
         return CLOSED;
     }
 
-    public State readError() {
+    @Override
+    public Enum<?> connected(BufferHandler buffer) {
+        return PROTOCOL_ERROR;
+    }
+
+    @Override
+    public Enum<?> protocolError() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Enum<?> readError() {
         return CLOSED;
     }
 
-    public State writeError() {
+    @Override
+    public Enum<?> writeError() {
         return CLOSED;
+    }
+
+    @Override
+    public Enum<?> sendGoodbye() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Enum<?> transmitMessage(String message) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Enum<?> writeReady() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Enum<?> readReady() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

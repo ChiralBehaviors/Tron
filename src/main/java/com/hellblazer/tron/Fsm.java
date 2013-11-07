@@ -26,9 +26,9 @@ public final class Fsm {
     @SafeVarargs
     public static <Context, T> FiniteStateMachine<Context, T> construct(Context fsmContext,
                                                                         Class<T> transitions,
-                                                                        State initialState,
+                                                                        Enum<?> initialState,
                                                                         boolean sync,
-                                                                        Class<? extends State>... stateMaps) {
+                                                                        Class<? extends Enum<?>>... stateMaps) {
         FiniteStateMachineImpl<Context, T> fsm = new FiniteStateMachineImpl<>(
                                                                               fsmContext,
                                                                               sync);

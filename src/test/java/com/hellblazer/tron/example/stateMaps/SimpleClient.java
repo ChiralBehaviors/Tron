@@ -18,8 +18,7 @@ package com.hellblazer.tron.example.stateMaps;
 import com.hellblazer.tron.EntryAction;
 import com.hellblazer.tron.FiniteStateMachine;
 import com.hellblazer.tron.Fsm;
-import com.hellblazer.tron.State;
-import com.hellblazer.tron.Transition;
+import com.hellblazer.tron.example.BufferHandler;
 import com.hellblazer.tron.example.SimpleFsm;
 import com.hellblazer.tron.example.SimpleProtocol;
 
@@ -28,7 +27,7 @@ import com.hellblazer.tron.example.SimpleProtocol;
  * @author hhildebrand
  * 
  */
-public enum SimpleClient implements State {
+public enum SimpleClient implements   SimpleFsm {
     CONNECTED() {
         @EntryAction
         public void establishClientSession() {
@@ -44,16 +43,16 @@ public enum SimpleClient implements State {
         }
     },
     SEND_MESSAGE() {
-        @Transition
-        State transmitMessage(String message) {
+        @Override
+        public Enum<?> sendGoodbye() {
+            return SEND_GOODBYE;
+        }
+
+        @Override
+        public Enum<?> transmitMessage(String message) {
             FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
             fsm.getContext().transmitMessage(message);
             return MessageSent;
-        }
-
-        @Transition
-        State sendGoodbye() {
-            return SEND_GOODBYE;
         }
     },
     MessageSent() {
@@ -63,14 +62,14 @@ public enum SimpleClient implements State {
             fsm.getContext().awaitAck();
         }
 
-        @Transition
-        public State writeReady() {
+        @Override
+        public Enum<?> writeReady() {
             return AWAIT_ACK;
         }
     },
     AWAIT_ACK() {
-        @Transition
-        public State readReady() {
+        @Override
+        public Enum<?> readReady() {
             return ACK_MESSAGE;
         }
     },
@@ -81,8 +80,8 @@ public enum SimpleClient implements State {
             fsm.getContext().sendGoodbye();
         }
 
-        @Transition
-        public State readReady() {
+        @Override
+        public Enum<?> readReady() {
             return null;
         }
     },
@@ -93,4 +92,63 @@ public enum SimpleClient implements State {
             fsm.getContext().ackReceived();
         }
     };
+
+    @Override
+    public Enum<?> accepted(BufferHandler buffer) {
+        return null;
+    }
+
+    @Override
+    public Enum<?> closing() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Enum<?> connected(BufferHandler buffer) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Enum<?> protocolError() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Enum<?> readError() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Enum<?> writeError() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Enum<?> sendGoodbye() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Enum<?> transmitMessage(String message) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Enum<?> writeReady() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Enum<?> readReady() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
