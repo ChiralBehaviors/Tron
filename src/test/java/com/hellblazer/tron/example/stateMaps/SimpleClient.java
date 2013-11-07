@@ -15,7 +15,11 @@
  */
 package com.hellblazer.tron.example.stateMaps;
 
+import com.hellblazer.tron.EntryAction;
+import com.hellblazer.tron.Fsm;
 import com.hellblazer.tron.State;
+import com.hellblazer.tron.Transition;
+import com.hellblazer.tron.example.SimpleFsm;
 
 /**
  * 
@@ -23,5 +27,68 @@ import com.hellblazer.tron.State;
  * 
  */
 public enum SimpleClient implements State {
-    CONNECTED
+    CONNECTED() {
+        @EntryAction
+        public void establishClientSession() {
+            SimpleFsm fsm = Fsm.thisFsm();
+            fsm.getContext().establishClientSession();
+        }
+    },
+    ESTABLISH_SESSION() {
+        @EntryAction
+        public void entry() {
+            SimpleFsm fsm = Fsm.thisFsm();
+            fsm.getContext().awaitAck();
+        }
+    },
+    SEND_MESSAGE() {
+        @Transition
+        State transmitMessage(String message) {
+            SimpleFsm fsm = Fsm.thisFsm();
+            fsm.getContext().transmitMessage(message);
+            return MessageSent;
+        }
+
+        @Transition
+        State sendGoodbye() {
+            return SEND_GOODBYE;
+        }
+    },
+    MessageSent() {
+        @EntryAction
+        public void entry() {
+            SimpleFsm fsm = Fsm.thisFsm();
+            fsm.getContext().awaitAck();
+        }
+
+        @Transition
+        public State writeReady() {
+            return AWAIT_ACK;
+        }
+    },
+    AWAIT_ACK() {
+        @Transition
+        public State readReady() {
+            return ACK_MESSAGE;
+        }
+    },
+    SEND_GOODBYE {
+        @EntryAction
+        public void entry() {
+            SimpleFsm fsm = Fsm.thisFsm();
+            fsm.getContext().sendGoodbye();
+        }
+
+        @Transition
+        public State readReady() {
+            return null;
+        }
+    },
+    ACK_MESSAGE() {
+        @EntryAction
+        public void entry() {
+            SimpleFsm fsm = Fsm.thisFsm();
+            fsm.getContext().ackReceived();
+        }
+    };
 }

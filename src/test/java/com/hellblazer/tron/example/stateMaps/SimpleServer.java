@@ -23,5 +23,5 @@ import com.hellblazer.tron.State;
  *
  */
 public enum SimpleServer implements State {
-    ACCEPTED
+    ACCEPTED, SESSION_ESTABLISHED,PROCESS_MESSAGE,AWAIT_MESSAGE,
 }
