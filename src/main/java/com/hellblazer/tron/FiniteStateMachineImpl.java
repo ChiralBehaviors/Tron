@@ -73,9 +73,10 @@ final class FiniteStateMachineImpl<Context, Transitions> implements
         return context;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public Enum<?> getCurrentState() {
-        return current;
+    public Transitions getCurrentState() {
+        return (Transitions) current;
     }
 
     @Override
@@ -94,19 +95,20 @@ final class FiniteStateMachineImpl<Context, Transitions> implements
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public Enum<?> previous() {
-        return previous;
+    public Transitions previous() {
+        return (Transitions) previous;
     }
 
     @Override
-    public void push(Enum<?> state) {
-        pendingPush = state;
+    public void push(Transitions state) {
+        pendingPush = (Enum<?>) state;
     }
 
     @Override
-    public void setCurrentState(Enum<?> state) {
-        current = state;
+    public void setCurrentState(Transitions state) {
+        current = (Enum<?>) state;
     }
 
     @Override

@@ -23,25 +23,27 @@ import java.lang.reflect.Proxy;
  * 
  */
 public final class Fsm {
-    public static <Context, T> FiniteStateMachine<Context, T> construct(Context fsmContext,
-                                                                        Class<T> transitions,
-                                                                        Enum<?> initialState,
-                                                                        boolean sync) {
+    public static <Context, Transitions> FiniteStateMachine<Context, Transitions> construct(Context fsmContext,
+                                                                                            Class<Transitions> transitions,
+                                                                                            Enum<?> initialState,
+                                                                                            boolean sync) {
         if (!transitions.isAssignableFrom(initialState.getClass())) {
             throw new IllegalArgumentException(
                                                String.format("Supplied initial state '%s' does not implement the transitions interface '%s'",
                                                              initialState,
                                                              transitions));
         }
-        FiniteStateMachineImpl<Context, T> fsm = new FiniteStateMachineImpl<>(
-                                                                              fsmContext,
-                                                                              sync);
-        fsm.setCurrentState(initialState);
+        FiniteStateMachineImpl<Context, Transitions> fsm = new FiniteStateMachineImpl<>(
+                                                                                        fsmContext,
+                                                                                        sync);
+        @SuppressWarnings("unchecked")
+        Transitions initial = (Transitions) initialState;
+        fsm.setCurrentState(initial);
         Class<?> fsmContextClass = fsmContext.getClass();
         @SuppressWarnings("unchecked")
-        T proxy = (T) Proxy.newProxyInstance(fsmContextClass.getClassLoader(),
-                                             new Class<?>[] { transitions },
-                                             fsm.handler);
+        Transitions proxy = (Transitions) Proxy.newProxyInstance(fsmContextClass.getClassLoader(),
+                                                                 new Class<?>[] { transitions },
+                                                                 fsm.handler);
         fsm.setProxy(proxy);
         return fsm;
     }

@@ -5,17 +5,17 @@ public interface FiniteStateMachine<Context, Transitions> {
 
     Context getContext();
 
-    Enum<?> getCurrentState();
+    Transitions getCurrentState();
 
     Transitions getTransitions();
 
     void pop();
 
-    Enum<?> previous();
+    Transitions previous();
 
-    void push(Enum<?> state);
+    void push(Transitions state);
 
-    void setCurrentState(Enum<?> state);
+    void setCurrentState(Transitions state);
 
     String transition();
 
