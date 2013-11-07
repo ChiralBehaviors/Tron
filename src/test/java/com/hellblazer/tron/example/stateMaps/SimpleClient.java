@@ -16,10 +16,12 @@
 package com.hellblazer.tron.example.stateMaps;
 
 import com.hellblazer.tron.EntryAction;
+import com.hellblazer.tron.FiniteStateMachine;
 import com.hellblazer.tron.Fsm;
 import com.hellblazer.tron.State;
 import com.hellblazer.tron.Transition;
 import com.hellblazer.tron.example.SimpleFsm;
+import com.hellblazer.tron.example.SimpleProtocol;
 
 /**
  * 
@@ -30,21 +32,21 @@ public enum SimpleClient implements State {
     CONNECTED() {
         @EntryAction
         public void establishClientSession() {
-            SimpleFsm fsm = Fsm.thisFsm();
+            FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
             fsm.getContext().establishClientSession();
         }
     },
     ESTABLISH_SESSION() {
         @EntryAction
         public void entry() {
-            SimpleFsm fsm = Fsm.thisFsm();
+            FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
             fsm.getContext().awaitAck();
         }
     },
     SEND_MESSAGE() {
         @Transition
         State transmitMessage(String message) {
-            SimpleFsm fsm = Fsm.thisFsm();
+            FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
             fsm.getContext().transmitMessage(message);
             return MessageSent;
         }
@@ -57,7 +59,7 @@ public enum SimpleClient implements State {
     MessageSent() {
         @EntryAction
         public void entry() {
-            SimpleFsm fsm = Fsm.thisFsm();
+            FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
             fsm.getContext().awaitAck();
         }
 
@@ -75,7 +77,7 @@ public enum SimpleClient implements State {
     SEND_GOODBYE {
         @EntryAction
         public void entry() {
-            SimpleFsm fsm = Fsm.thisFsm();
+            FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
             fsm.getContext().sendGoodbye();
         }
 
@@ -87,7 +89,7 @@ public enum SimpleClient implements State {
     ACK_MESSAGE() {
         @EntryAction
         public void entry() {
-            SimpleFsm fsm = Fsm.thisFsm();
+            FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
             fsm.getContext().ackReceived();
         }
     };

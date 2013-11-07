@@ -33,38 +33,38 @@ import java.util.concurrent.locks.ReentrantLock;
  * @param <Context>
  *            the fsm context interface
  */
-final class FiniteStateMachineImpl<Transitions extends FiniteStateMachine<? super Context>, Context>
-        implements FiniteStateMachine<Context> {
+final class FiniteStateMachineImpl<Context, Transitions> implements
+        FiniteStateMachine<Context, Transitions> {
 
-    static final ThreadLocal<Object> thisFsm = new ThreadLocal<>();
+    static final ThreadLocal<Object>                 thisFsm = new ThreadLocal<>();
 
-    private State                    pendingPush;
-    private State                    current;
-    final InvocationHandler          handler = new InvocationHandler() {
+    private State                                    pendingPush;
+    private State                                    current;
+    final InvocationHandler                          handler = new InvocationHandler() {
 
-                                                 @Override
-                                                 public Object invoke(Object proxy,
-                                                                      Method method,
-                                                                      Object[] args)
-                                                                                    throws Throwable {
-                                                     return FiniteStateMachineImpl.this.invoke(method,
-                                                                                               args);
-                                                 }
-                                             };
-    private Transitions              proxy;
-    private State                    previous;
-    private String                   transition;
-    private final Lock               sync;
-    private final Deque<State>       stack   = new ArrayDeque<>();
-    private final Context            context;
+                                                                 @Override
+                                                                 public Object invoke(Object proxy,
+                                                                                      Method method,
+                                                                                      Object[] args)
+                                                                                                    throws Throwable {
+                                                                     return FiniteStateMachineImpl.this.invoke(method,
+                                                                                                               args);
+                                                                 }
+                                                             };
+    private FiniteStateMachine<Context, Transitions> proxy;
+    private State                                    previous;
+    private String                                   transition;
+    private final Lock                               sync;
+    private final Deque<State>                       stack   = new ArrayDeque<>();
+    private final Context                            context;
 
     FiniteStateMachineImpl(Context context, boolean sync) {
         this.context = context;
         this.sync = sync ? new ReentrantLock() : null;
     }
 
-    void setProxy(Transitions proxy) {
-        this.proxy = proxy;
+    void setProxy(FiniteStateMachine<Context, Transitions> proxy2) {
+        this.proxy = proxy2;
     }
 
     private Object invoke(Method method, Object[] arguments) {
@@ -213,5 +213,12 @@ final class FiniteStateMachineImpl<Transitions extends FiniteStateMachine<? supe
     @Override
     public void enterStartState() {
         executeEntryAction();
+    }
+
+    @Override
+    public Transitions getTransitions() {
+        @SuppressWarnings("unchecked")
+        Transitions transitions = (Transitions) proxy;
+        return transitions;
     }
 }

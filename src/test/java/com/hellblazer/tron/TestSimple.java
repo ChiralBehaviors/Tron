@@ -22,6 +22,7 @@ import org.junit.Test;
 
 import com.hellblazer.tron.example.BufferHandler;
 import com.hellblazer.tron.example.SimpleFsm;
+import com.hellblazer.tron.example.SimpleProtocol;
 import com.hellblazer.tron.example.impl.SimpleProtocolImpl;
 import com.hellblazer.tron.example.stateMaps.Simple;
 import com.hellblazer.tron.example.stateMaps.SimpleClient;
@@ -37,13 +38,17 @@ public class TestSimple {
     public void testIt() {
         SimpleProtocolImpl protocol = new SimpleProtocolImpl();
         @SuppressWarnings("unchecked")
-        SimpleFsm fsm = Fsm.construct(protocol, SimpleFsm.class,
-                                      Simple.INITIAL, true, new Class[] {
-                                              Simple.class, SimpleServer.class,
-                                              SimpleClient.class });
+        FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.construct(protocol,
+                                                                          SimpleFsm.class,
+                                                                          Simple.INITIAL,
+                                                                          true,
+                                                                          new Class[] {
+                                                                                  Simple.class,
+                                                                                  SimpleServer.class,
+                                                                                  SimpleClient.class });
         assertNotNull(fsm);
         BufferHandler handler = new BufferHandler();
-        fsm.accepted(handler);
+        fsm.getTransitions().accepted(handler);
         assertEquals(handler, protocol.getHandler());
         assertEquals(SimpleServer.ACCEPTED, fsm.getCurrentState());
     }

@@ -1,6 +1,6 @@
 package com.hellblazer.tron;
 
-public interface FiniteStateMachine<Context> {
+public interface FiniteStateMachine<Context, Transitions> {
     void push(State state);
 
     void pop();
@@ -16,4 +16,7 @@ public interface FiniteStateMachine<Context> {
     Context getContext();
 
     void enterStartState();
+    
+    Transitions getTransitions();
+    
 }

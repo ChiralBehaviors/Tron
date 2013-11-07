@@ -15,6 +15,7 @@
  */
 package com.hellblazer.tron.example.stateMaps;
 
+import com.hellblazer.tron.FiniteStateMachine;
 import com.hellblazer.tron.Fsm;
 import com.hellblazer.tron.State;
 import com.hellblazer.tron.Transition;
@@ -31,7 +32,7 @@ public enum Simple implements State {
     INITIAL() {
         @Transition
         public State accepted(BufferHandler handler) {
-            SimpleFsm fsm = Fsm.thisFsm();
+            FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
             fsm.getContext().setHandler(handler);
             fsm.push(SimpleServer.ACCEPTED);
             return CONNECTED;
@@ -39,7 +40,7 @@ public enum Simple implements State {
 
         @Transition
         public State connected(BufferHandler handler) {
-            SimpleFsm fsm = Fsm.thisFsm();
+            FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
             fsm.getContext().setHandler(handler);
             fsm.push(SimpleClient.CONNECTED);
             return CONNECTED;
@@ -67,7 +68,7 @@ public enum Simple implements State {
 
     @Transition
     public State closing() {
-        SimpleFsm fsm = Fsm.thisFsm();
+        FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
         fsm.push(CONNECTED);
         @SuppressWarnings("unused")
         SimpleProtocol context = fsm.getContext();

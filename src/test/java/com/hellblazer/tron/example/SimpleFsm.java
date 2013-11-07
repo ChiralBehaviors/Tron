@@ -15,7 +15,6 @@
  */
 package com.hellblazer.tron.example;
 
-import com.hellblazer.tron.FiniteStateMachine;
 import com.hellblazer.tron.State;
 
 /**
@@ -23,7 +22,7 @@ import com.hellblazer.tron.State;
  * @author hhildebrand
  * 
  */
-public interface SimpleFsm extends FiniteStateMachine<SimpleProtocol> {
+public interface SimpleFsm {
     State accepted(BufferHandler buffer);
 
     State connected(BufferHandler buffer);
