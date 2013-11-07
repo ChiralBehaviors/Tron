@@ -23,25 +23,15 @@ import java.lang.reflect.Proxy;
  * 
  */
 public final class Fsm {
-    @SafeVarargs
     public static <Context, T> FiniteStateMachine<Context, T> construct(Context fsmContext,
                                                                         Class<T> transitions,
                                                                         Enum<?> initialState,
-                                                                        boolean sync,
-                                                                        Class<? extends Enum<?>>... stateMaps) {
+                                                                        boolean sync) {
         if (!transitions.isAssignableFrom(initialState.getClass())) {
             throw new IllegalArgumentException(
                                                String.format("Supplied initial state '%s' does not implement the transitions interface '%s'",
                                                              initialState,
                                                              transitions));
-        }
-        for (Class<?> stateMap : stateMaps) {
-            if (!transitions.isAssignableFrom(stateMap)) {
-                throw new IllegalArgumentException(
-                                                   String.format("Supplied state map enumeration '%s' does not implement the transitions interface '%s'",
-                                                                 stateMap,
-                                                                 transitions));
-            }
         }
         FiniteStateMachineImpl<Context, T> fsm = new FiniteStateMachineImpl<>(
                                                                               fsmContext,

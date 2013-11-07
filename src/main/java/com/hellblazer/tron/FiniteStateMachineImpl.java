@@ -219,7 +219,7 @@ final class FiniteStateMachineImpl<Context, Transitions> implements
         return current;
     }
 
-    void setProxy(FiniteStateMachine<Context, Transitions> proxy2) {
-        this.proxy = proxy2;
+    void setProxy(FiniteStateMachine<Context, Transitions> proxy) {
+        this.proxy = proxy;
     }
 }

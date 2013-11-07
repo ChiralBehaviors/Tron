@@ -25,7 +25,6 @@ import com.hellblazer.tron.example.SimpleFsm;
 import com.hellblazer.tron.example.SimpleProtocol;
 import com.hellblazer.tron.example.impl.SimpleProtocolImpl;
 import com.hellblazer.tron.example.stateMaps.Simple;
-import com.hellblazer.tron.example.stateMaps.SimpleClient;
 import com.hellblazer.tron.example.stateMaps.SimpleServer;
 
 /**
@@ -36,20 +35,15 @@ import com.hellblazer.tron.example.stateMaps.SimpleServer;
 public class TestSimple {
     @Test
     public void testIt() {
-        SimpleProtocolImpl protocol = new SimpleProtocolImpl();
-        @SuppressWarnings("unchecked")
+        SimpleProtocol protocol = new SimpleProtocolImpl();
         FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.construct(protocol,
                                                                           SimpleFsm.class,
                                                                           Simple.INITIAL,
-                                                                          true,
-                                                                          new Class[] {
-                                                                                  Simple.class,
-                                                                                  SimpleServer.class,
-                                                                                  SimpleClient.class });
+                                                                          true);
         assertNotNull(fsm);
         BufferHandler handler = new BufferHandler();
         fsm.getTransitions().accepted(handler);
-        assertEquals(handler, protocol.getHandler());
+        assertEquals(handler, ((SimpleProtocolImpl) protocol).getHandler());
         assertEquals(SimpleServer.ACCEPTED, fsm.getCurrentState());
     }
 }
