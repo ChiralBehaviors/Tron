@@ -39,13 +39,11 @@ public final class Fsm {
         fsm.setCurrentState(initialState);
         Class<?> fsmContextClass = fsmContext.getClass();
         @SuppressWarnings("unchecked")
-        FiniteStateMachine<Context, T> proxy = (FiniteStateMachine<Context, T>) Proxy.newProxyInstance(fsmContextClass.getClassLoader(),
-                                                                                                       new Class<?>[] {
-                                                                                                               transitions,
-                                                                                                               FiniteStateMachine.class },
-                                                                                                       fsm.handler);
+        T proxy = (T) Proxy.newProxyInstance(fsmContextClass.getClassLoader(),
+                                             new Class<?>[] { transitions },
+                                             fsm.handler);
         fsm.setProxy(proxy);
-        return proxy;
+        return fsm;
     }
 
     public static <T extends FiniteStateMachine<?, ?>> T thisFsm() {

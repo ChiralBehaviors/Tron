@@ -36,27 +36,27 @@ import java.util.concurrent.locks.ReentrantLock;
 final class FiniteStateMachineImpl<Context, Transitions> implements
         FiniteStateMachine<Context, Transitions> {
 
-    static final ThreadLocal<Object>                 thisFsm = new ThreadLocal<>();
+    static final ThreadLocal<FiniteStateMachineImpl<?, ?>> thisFsm = new ThreadLocal<>();
 
-    private final Context                            context;
-    private Enum<?>                                  current;
-    private Enum<?>                                  pendingPush;
-    private Enum<?>                                  previous;
-    private FiniteStateMachine<Context, Transitions> proxy;
-    private final Deque<Enum<?>>                     stack   = new ArrayDeque<>();
-    private final Lock                               sync;
-    private String                                   transition;
-    final InvocationHandler                          handler = new InvocationHandler() {
+    private final Context                                  context;
+    private Enum<?>                                        current;
+    private Enum<?>                                        pendingPush;
+    private Enum<?>                                        previous;
+    private Transitions                                    proxy;
+    private final Deque<Enum<?>>                           stack   = new ArrayDeque<>();
+    private final Lock                                     sync;
+    private String                                         transition;
+    final InvocationHandler                                handler = new InvocationHandler() {
 
-                                                                 @Override
-                                                                 public Object invoke(Object proxy,
-                                                                                      Method method,
-                                                                                      Object[] args)
-                                                                                                    throws Throwable {
-                                                                     return FiniteStateMachineImpl.this.invoke(method,
-                                                                                                               args);
-                                                                 }
-                                                             };
+                                                                       @Override
+                                                                       public Object invoke(Object proxy,
+                                                                                            Method method,
+                                                                                            Object[] args)
+                                                                                                          throws Throwable {
+                                                                           return FiniteStateMachineImpl.this.fire(method,
+                                                                                                                   args);
+                                                                       }
+                                                                   };
 
     FiniteStateMachineImpl(Context context, boolean sync) {
         this.context = context;
@@ -80,9 +80,7 @@ final class FiniteStateMachineImpl<Context, Transitions> implements
 
     @Override
     public Transitions getTransitions() {
-        @SuppressWarnings("unchecked")
-        Transitions transitions = (Transitions) proxy;
-        return transitions;
+        return proxy;
     }
 
     @Override
@@ -160,7 +158,7 @@ final class FiniteStateMachineImpl<Context, Transitions> implements
                 return null;
             }
         }
-        Object previousFsm = pushThis();
+        FiniteStateMachineImpl<?, ?> previousFsm = pushThis();
         previous = current;
         transition = t.toGenericString();
         try {
@@ -192,34 +190,17 @@ final class FiniteStateMachineImpl<Context, Transitions> implements
         return null;
     }
 
-    private Object invoke(Method method, Object[] arguments) {
-        try {
-            Method fsmMethod = getClass().getDeclaredMethod(method.getName(),
-                                                            method.getParameterTypes());
-            fsmMethod.setAccessible(true);
-            try {
-                return fsmMethod.invoke(this, arguments);
-            } catch (IllegalAccessException | IllegalArgumentException
-                    | InvocationTargetException e) {
-                throw new IllegalStateException(e);
-            }
-        } catch (NoSuchMethodException e) {
-            // do nothing, this is a transition
-        }
-        return fire(method, arguments);
-    }
-
-    private void pop(Object previous) {
+    private void pop(FiniteStateMachineImpl<?, ?> previous) {
         thisFsm.set(previous);
     }
 
-    private Object pushThis() {
-        Object current = thisFsm.get();
-        thisFsm.set(proxy);
+    private FiniteStateMachineImpl<?, ?> pushThis() {
+        FiniteStateMachineImpl<?, ?> current = thisFsm.get();
+        thisFsm.set(this);
         return current;
     }
 
-    void setProxy(FiniteStateMachine<Context, Transitions> proxy) {
+    void setProxy(Transitions proxy) {
         this.proxy = proxy;
     }
 }
