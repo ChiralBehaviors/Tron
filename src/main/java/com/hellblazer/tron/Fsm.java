@@ -42,7 +42,7 @@ public final class Fsm {
         return proxy;
     }
 
-    public static <Context, T extends FiniteStateMachine<Context>> T thisFsm() {
+    public static <T extends FiniteStateMachine<?>> T thisFsm() {
         @SuppressWarnings("unchecked")
         T fsm = (T) FiniteStateMachineImpl.thisFsm.get();
         return fsm;
