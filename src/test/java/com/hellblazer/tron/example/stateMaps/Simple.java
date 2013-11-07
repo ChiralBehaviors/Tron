@@ -27,8 +27,7 @@ import com.hellblazer.tron.example.SimpleProtocol;
  * 
  */
 public enum Simple implements SimpleFsm {
-    CLOSED,
-    CONNECTED() {
+    CLOSED, CONNECTED() {
         @Override
         public SimpleFsm closing() {
             return CLOSED;
@@ -60,7 +59,8 @@ public enum Simple implements SimpleFsm {
             fsm.push(SimpleClient.CONNECTED);
             return CONNECTED;
         }
-    }, PROTOCOL_ERROR() {
+    },
+    PROTOCOL_ERROR() {
 
     };
 

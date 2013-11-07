@@ -19,6 +19,12 @@ public class SimpleProtocolImpl implements SimpleProtocol {
     }
 
     @Override
+    public void enableSend() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
     public void establishClientSession() {
         // TODO Auto-generated method stub
 
@@ -43,12 +49,6 @@ public class SimpleProtocolImpl implements SimpleProtocol {
     public void transmitMessage(String message) {
         // TODO Auto-generated method stub
 
-    }
-
-    @Override
-    public void enableSend() {
-        // TODO Auto-generated method stub
-        
     }
 
 }

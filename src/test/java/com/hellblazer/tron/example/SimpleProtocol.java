@@ -25,6 +25,8 @@ public interface SimpleProtocol {
 
     void awaitAck();
 
+    void enableSend();
+
     void establishClientSession();
 
     void sendGoodbye();
@@ -32,6 +34,4 @@ public interface SimpleProtocol {
     void setHandler(BufferHandler handler);
 
     void transmitMessage(String message);
-
-    void enableSend();
 }
