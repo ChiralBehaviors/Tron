@@ -18,23 +18,16 @@ package com.hellblazer.tron.example.stateMaps;
 import com.hellblazer.tron.example.BufferHandler;
 import com.hellblazer.tron.example.SimpleFsm;
 
-
 /**
  * 
  * @author hhildebrand
  * 
  */
 public enum SimpleServer implements SimpleFsm {
-    ACCEPTED, SESSION_ESTABLISHED, PROCESS_MESSAGE, AWAIT_MESSAGE,;
+    ACCEPTED, AWAIT_MESSAGE, PROCESS_MESSAGE, SESSION_ESTABLISHED, ;
 
     @Override
     public Enum<?> accepted(BufferHandler buffer) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Enum<?> connected(BufferHandler buffer) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -46,19 +39,25 @@ public enum SimpleServer implements SimpleFsm {
     }
 
     @Override
-    public Enum<?> readError() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Enum<?> writeError() {
+    public Enum<?> connected(BufferHandler buffer) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public Enum<?> protocolError() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Enum<?> readError() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Enum<?> readReady() {
         // TODO Auto-generated method stub
         return null;
     }
@@ -76,13 +75,13 @@ public enum SimpleServer implements SimpleFsm {
     }
 
     @Override
-    public Enum<?> writeReady() {
+    public Enum<?> writeError() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Enum<?> readReady() {
+    public Enum<?> writeReady() {
         // TODO Auto-generated method stub
         return null;
     }

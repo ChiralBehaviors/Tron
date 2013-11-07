@@ -15,22 +15,21 @@
  */
 package com.hellblazer.tron.example;
 
-
 /**
  * 
  * @author hhildebrand
  * 
  */
 public interface SimpleProtocol {
-    void setHandler(BufferHandler handler);
-
-    void establishClientSession();
+    void ackReceived();
 
     void awaitAck();
 
-    void transmitMessage(String message);
+    void establishClientSession();
 
     void sendGoodbye();
 
-    void ackReceived();
+    void setHandler(BufferHandler handler);
+
+    void transmitMessage(String message);
 }

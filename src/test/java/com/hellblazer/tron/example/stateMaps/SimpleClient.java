@@ -15,7 +15,7 @@
  */
 package com.hellblazer.tron.example.stateMaps;
 
-import com.hellblazer.tron.EntryAction;
+import com.hellblazer.tron.Entry;
 import com.hellblazer.tron.FiniteStateMachine;
 import com.hellblazer.tron.Fsm;
 import com.hellblazer.tron.example.BufferHandler;
@@ -27,19 +27,56 @@ import com.hellblazer.tron.example.SimpleProtocol;
  * @author hhildebrand
  * 
  */
-public enum SimpleClient implements   SimpleFsm {
+public enum SimpleClient implements SimpleFsm {
+    ACK_MESSAGE() {
+        @Entry
+        public void entry() {
+            FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
+            fsm.getContext().ackReceived();
+        }
+    },
+    AWAIT_ACK() {
+        @Override
+        public Enum<?> readReady() {
+            return ACK_MESSAGE;
+        }
+    },
     CONNECTED() {
-        @EntryAction
+        @Entry
         public void establishClientSession() {
             FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
             fsm.getContext().establishClientSession();
         }
     },
     ESTABLISH_SESSION() {
-        @EntryAction
+        @Entry
         public void entry() {
             FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
             fsm.getContext().awaitAck();
+        }
+    },
+    MessageSent() {
+        @Entry
+        public void entry() {
+            FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
+            fsm.getContext().awaitAck();
+        }
+
+        @Override
+        public Enum<?> writeReady() {
+            return AWAIT_ACK;
+        }
+    },
+    SEND_GOODBYE {
+        @Entry
+        public void entry() {
+            FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
+            fsm.getContext().sendGoodbye();
+        }
+
+        @Override
+        public Enum<?> readReady() {
+            return null;
         }
     },
     SEND_MESSAGE() {
@@ -53,43 +90,6 @@ public enum SimpleClient implements   SimpleFsm {
             FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
             fsm.getContext().transmitMessage(message);
             return MessageSent;
-        }
-    },
-    MessageSent() {
-        @EntryAction
-        public void entry() {
-            FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
-            fsm.getContext().awaitAck();
-        }
-
-        @Override
-        public Enum<?> writeReady() {
-            return AWAIT_ACK;
-        }
-    },
-    AWAIT_ACK() {
-        @Override
-        public Enum<?> readReady() {
-            return ACK_MESSAGE;
-        }
-    },
-    SEND_GOODBYE {
-        @EntryAction
-        public void entry() {
-            FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
-            fsm.getContext().sendGoodbye();
-        }
-
-        @Override
-        public Enum<?> readReady() {
-            return null;
-        }
-    },
-    ACK_MESSAGE() {
-        @EntryAction
-        public void entry() {
-            FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
-            fsm.getContext().ackReceived();
         }
     };
 
@@ -123,7 +123,7 @@ public enum SimpleClient implements   SimpleFsm {
     }
 
     @Override
-    public Enum<?> writeError() {
+    public Enum<?> readReady() {
         // TODO Auto-generated method stub
         return null;
     }
@@ -141,13 +141,13 @@ public enum SimpleClient implements   SimpleFsm {
     }
 
     @Override
-    public Enum<?> writeReady() {
+    public Enum<?> writeError() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Enum<?> readReady() {
+    public Enum<?> writeReady() {
         // TODO Auto-generated method stub
         return null;
     }

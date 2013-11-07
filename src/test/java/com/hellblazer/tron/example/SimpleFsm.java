@@ -15,7 +15,6 @@
  */
 package com.hellblazer.tron.example;
 
-
 /**
  * 
  * @author hhildebrand
@@ -24,21 +23,21 @@ package com.hellblazer.tron.example;
 public interface SimpleFsm {
     Enum<?> accepted(BufferHandler buffer);
 
+    Enum<?> closing();
+
     Enum<?> connected(BufferHandler buffer);
 
-    Enum<?> closing();
+    Enum<?> protocolError();
 
     Enum<?> readError();
 
-    Enum<?> writeError();
-
-    Enum<?> protocolError();
+    Enum<?> readReady();
 
     Enum<?> sendGoodbye();
 
     Enum<?> transmitMessage(String message);
 
-    Enum<?> writeReady();
+    Enum<?> writeError();
 
-    Enum<?> readReady();
+    Enum<?> writeReady();
 }

@@ -27,23 +27,7 @@ import com.hellblazer.tron.example.SimpleProtocol;
  * 
  */
 public enum Simple implements SimpleFsm {
-    INITIAL() {
-        @Override
-        public Enum<?> accepted(BufferHandler handler) {
-            FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
-            fsm.getContext().setHandler(handler);
-            fsm.push(SimpleServer.ACCEPTED);
-            return CONNECTED;
-        }
-
-        @Override
-        public Enum<?> connected(BufferHandler handler) {
-            FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
-            fsm.getContext().setHandler(handler);
-            fsm.push(SimpleClient.CONNECTED);
-            return CONNECTED;
-        }
-    },
+    CLOSED,
     CONNECTED() {
         @Override
         public Enum<?> closing() {
@@ -60,7 +44,23 @@ public enum Simple implements SimpleFsm {
             return CLOSED;
         }
     },
-    CLOSED, PROTOCOL_ERROR() {
+    INITIAL() {
+        @Override
+        public Enum<?> accepted(BufferHandler handler) {
+            FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
+            fsm.getContext().setHandler(handler);
+            fsm.push(SimpleServer.ACCEPTED);
+            return CONNECTED;
+        }
+
+        @Override
+        public Enum<?> connected(BufferHandler handler) {
+            FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
+            fsm.getContext().setHandler(handler);
+            fsm.push(SimpleClient.CONNECTED);
+            return CONNECTED;
+        }
+    }, PROTOCOL_ERROR() {
 
     };
 
@@ -94,8 +94,9 @@ public enum Simple implements SimpleFsm {
     }
 
     @Override
-    public Enum<?> writeError() {
-        return CLOSED;
+    public Enum<?> readReady() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
@@ -111,13 +112,12 @@ public enum Simple implements SimpleFsm {
     }
 
     @Override
-    public Enum<?> writeReady() {
-        // TODO Auto-generated method stub
-        return null;
+    public Enum<?> writeError() {
+        return CLOSED;
     }
 
     @Override
-    public Enum<?> readReady() {
+    public Enum<?> writeReady() {
         // TODO Auto-generated method stub
         return null;
     }

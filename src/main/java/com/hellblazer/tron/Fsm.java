@@ -29,6 +29,20 @@ public final class Fsm {
                                                                         Enum<?> initialState,
                                                                         boolean sync,
                                                                         Class<? extends Enum<?>>... stateMaps) {
+        if (!transitions.isAssignableFrom(initialState.getClass())) {
+            throw new IllegalArgumentException(
+                                               String.format("Supplied initial state '%s' does not implement the transitions interface '%s'",
+                                                             initialState,
+                                                             transitions));
+        }
+        for (Class<?> stateMap : stateMaps) {
+            if (!transitions.isAssignableFrom(stateMap)) {
+                throw new IllegalArgumentException(
+                                                   String.format("Supplied state map enumeration '%s' does not implement the transitions interface '%s'",
+                                                                 stateMap,
+                                                                 transitions));
+            }
+        }
         FiniteStateMachineImpl<Context, T> fsm = new FiniteStateMachineImpl<>(
                                                                               fsmContext,
                                                                               sync);

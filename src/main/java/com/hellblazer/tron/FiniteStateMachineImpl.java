@@ -38,8 +38,14 @@ final class FiniteStateMachineImpl<Context, Transitions> implements
 
     static final ThreadLocal<Object>                 thisFsm = new ThreadLocal<>();
 
-    private Enum<?>                                  pendingPush;
+    private final Context                            context;
     private Enum<?>                                  current;
+    private Enum<?>                                  pendingPush;
+    private Enum<?>                                  previous;
+    private FiniteStateMachine<Context, Transitions> proxy;
+    private final Deque<Enum<?>>                     stack   = new ArrayDeque<>();
+    private final Lock                               sync;
+    private String                                   transition;
     final InvocationHandler                          handler = new InvocationHandler() {
 
                                                                  @Override
@@ -51,37 +57,91 @@ final class FiniteStateMachineImpl<Context, Transitions> implements
                                                                                                                args);
                                                                  }
                                                              };
-    private FiniteStateMachine<Context, Transitions> proxy;
-    private Enum<?>                                  previous;
-    private String                                   transition;
-    private final Lock                               sync;
-    private final Deque<Enum<?>>                     stack   = new ArrayDeque<>();
-    private final Context                            context;
 
     FiniteStateMachineImpl(Context context, boolean sync) {
         this.context = context;
         this.sync = sync ? new ReentrantLock() : null;
     }
 
-    void setProxy(FiniteStateMachine<Context, Transitions> proxy2) {
-        this.proxy = proxy2;
+    @Override
+    public void enterStartState() {
+        executeEntryAction();
     }
 
-    private Object invoke(Method method, Object[] arguments) {
+    @Override
+    public Context getContext() {
+        return context;
+    }
+
+    @Override
+    public Enum<?> getCurrentState() {
+        return current;
+    }
+
+    @Override
+    public Transitions getTransitions() {
+        @SuppressWarnings("unchecked")
+        Transitions transitions = (Transitions) proxy;
+        return transitions;
+    }
+
+    @Override
+    public void pop() {
+        previous = current;
+        executeExitAction();
         try {
-            Method fsmMethod = getClass().getDeclaredMethod(method.getName(),
-                                                            method.getParameterTypes());
-            fsmMethod.setAccessible(true);
-            try {
-                return fsmMethod.invoke(this, arguments);
-            } catch (IllegalAccessException | IllegalArgumentException
-                    | InvocationTargetException e) {
-                throw new IllegalStateException(e);
-            }
-        } catch (NoSuchMethodException e) {
-            // do nothing, this is a transition
+            current = stack.pop();
+        } catch (NoSuchElementException e) {
+            throw new IllegalStateException("State stack is empty");
         }
-        return fire(method, arguments);
+    }
+
+    @Override
+    public Enum<?> previous() {
+        return previous;
+    }
+
+    @Override
+    public void push(Enum<?> state) {
+        pendingPush = state;
+    }
+
+    @Override
+    public void setCurrentState(Enum<?> state) {
+        current = state;
+    }
+
+    @Override
+    public String transition() {
+        return transition;
+    }
+
+    private void executeEntryAction() {
+        for (Method action : current.getClass().getDeclaredMethods()) {
+            if (action.isAnnotationPresent(Entry.class)) {
+                try {
+                    action.invoke(current, new Object[] {});
+                    return;
+                } catch (IllegalAccessException | IllegalArgumentException
+                        | InvocationTargetException e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+        }
+    }
+
+    private void executeExitAction() {
+        for (Method action : current.getClass().getDeclaredMethods()) {
+            if (action.isAnnotationPresent(Exit.class)) {
+                try {
+                    action.invoke(current, new Object[] {});
+                    return;
+                } catch (IllegalAccessException | IllegalArgumentException
+                        | InvocationTargetException e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+        }
     }
 
     private Object fire(Method t, Object[] arguments) {
@@ -132,32 +192,21 @@ final class FiniteStateMachineImpl<Context, Transitions> implements
         return null;
     }
 
-    private void executeEntryAction() {
-        for (Method action : current.getClass().getDeclaredMethods()) {
-            if (action.isAnnotationPresent(EntryAction.class)) {
-                try {
-                    action.invoke(current, new Object[] {});
-                    return;
-                } catch (IllegalAccessException | IllegalArgumentException
-                        | InvocationTargetException e) {
-                    throw new IllegalStateException(e);
-                }
+    private Object invoke(Method method, Object[] arguments) {
+        try {
+            Method fsmMethod = getClass().getDeclaredMethod(method.getName(),
+                                                            method.getParameterTypes());
+            fsmMethod.setAccessible(true);
+            try {
+                return fsmMethod.invoke(this, arguments);
+            } catch (IllegalAccessException | IllegalArgumentException
+                    | InvocationTargetException e) {
+                throw new IllegalStateException(e);
             }
+        } catch (NoSuchMethodException e) {
+            // do nothing, this is a transition
         }
-    }
-
-    private void executeExitAction() {
-        for (Method action : current.getClass().getDeclaredMethods()) {
-            if (action.isAnnotationPresent(ExitAction.class)) {
-                try {
-                    action.invoke(current, new Object[] {});
-                    return;
-                } catch (IllegalAccessException | IllegalArgumentException
-                        | InvocationTargetException e) {
-                    throw new IllegalStateException(e);
-                }
-            }
-        }
+        return fire(method, arguments);
     }
 
     private void pop(Object previous) {
@@ -170,56 +219,7 @@ final class FiniteStateMachineImpl<Context, Transitions> implements
         return current;
     }
 
-    @Override
-    public void push(Enum<?> state) {
-        pendingPush = state;
-    }
-
-    @Override
-    public void pop() {
-        previous = current;
-        executeExitAction();
-        try {
-            current = stack.pop();
-        } catch (NoSuchElementException e) {
-            throw new IllegalStateException("State stack is empty");
-        }
-    }
-
-    @Override
-    public Enum<?> getCurrentState() {
-        return current;
-    }
-
-    @Override
-    public Enum<?> previous() {
-        return previous;
-    }
-
-    @Override
-    public String transition() {
-        return transition;
-    }
-
-    @Override
-    public Context getContext() {
-        return context;
-    }
-
-    @Override
-    public void setCurrentState(Enum<?> state) {
-        current = state;
-    }
-
-    @Override
-    public void enterStartState() {
-        executeEntryAction();
-    }
-
-    @Override
-    public Transitions getTransitions() {
-        @SuppressWarnings("unchecked")
-        Transitions transitions = (Transitions) proxy;
-        return transitions;
+    void setProxy(FiniteStateMachine<Context, Transitions> proxy2) {
+        this.proxy = proxy2;
     }
 }
