@@ -30,23 +30,23 @@ public enum Simple implements SimpleFsm {
     CLOSED,
     CONNECTED() {
         @Override
-        public Enum<?> closing() {
+        public SimpleFsm closing() {
             return CLOSED;
         }
 
         @Override
-        public Enum<?> readError() {
+        public SimpleFsm readError() {
             return CLOSED;
         }
 
         @Override
-        public Enum<?> writeError() {
+        public SimpleFsm writeError() {
             return CLOSED;
         }
     },
     INITIAL() {
         @Override
-        public Enum<?> accepted(BufferHandler handler) {
+        public SimpleFsm accepted(BufferHandler handler) {
             FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
             fsm.getContext().setHandler(handler);
             fsm.push(SimpleServer.ACCEPTED);
@@ -54,7 +54,7 @@ public enum Simple implements SimpleFsm {
         }
 
         @Override
-        public Enum<?> connected(BufferHandler handler) {
+        public SimpleFsm connected(BufferHandler handler) {
             FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
             fsm.getContext().setHandler(handler);
             fsm.push(SimpleClient.CONNECTED);
@@ -65,12 +65,12 @@ public enum Simple implements SimpleFsm {
     };
 
     @Override
-    public Enum<?> accepted(BufferHandler buffer) {
+    public SimpleFsm accepted(BufferHandler buffer) {
         return PROTOCOL_ERROR;
     }
 
     @Override
-    public Enum<?> closing() {
+    public SimpleFsm closing() {
         FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
         fsm.push(CONNECTED);
         fsm.getContext();
@@ -78,46 +78,46 @@ public enum Simple implements SimpleFsm {
     }
 
     @Override
-    public Enum<?> connected(BufferHandler buffer) {
+    public SimpleFsm connected(BufferHandler buffer) {
         return PROTOCOL_ERROR;
     }
 
     @Override
-    public Enum<?> protocolError() {
+    public SimpleFsm protocolError() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Enum<?> readError() {
+    public SimpleFsm readError() {
         return CLOSED;
     }
 
     @Override
-    public Enum<?> readReady() {
+    public SimpleFsm readReady() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Enum<?> sendGoodbye() {
+    public SimpleFsm sendGoodbye() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Enum<?> transmitMessage(String message) {
+    public SimpleFsm transmitMessage(String message) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Enum<?> writeError() {
+    public SimpleFsm writeError() {
         return CLOSED;
     }
 
     @Override
-    public Enum<?> writeReady() {
+    public SimpleFsm writeReady() {
         // TODO Auto-generated method stub
         return null;
     }

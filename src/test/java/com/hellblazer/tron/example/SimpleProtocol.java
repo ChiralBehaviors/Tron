@@ -32,4 +32,6 @@ public interface SimpleProtocol {
     void setHandler(BufferHandler handler);
 
     void transmitMessage(String message);
+
+    void enableSend();
 }

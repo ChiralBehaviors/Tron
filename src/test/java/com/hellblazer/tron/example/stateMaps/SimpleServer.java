@@ -27,61 +27,61 @@ public enum SimpleServer implements SimpleFsm {
     ACCEPTED, AWAIT_MESSAGE, PROCESS_MESSAGE, SESSION_ESTABLISHED, ;
 
     @Override
-    public Enum<?> accepted(BufferHandler buffer) {
+    public SimpleFsm accepted(BufferHandler buffer) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Enum<?> closing() {
+    public SimpleFsm closing() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Enum<?> connected(BufferHandler buffer) {
+    public SimpleFsm connected(BufferHandler buffer) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Enum<?> protocolError() {
+    public SimpleFsm protocolError() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Enum<?> readError() {
+    public SimpleFsm readError() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Enum<?> readReady() {
+    public SimpleFsm readReady() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Enum<?> sendGoodbye() {
+    public SimpleFsm sendGoodbye() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Enum<?> transmitMessage(String message) {
+    public SimpleFsm transmitMessage(String message) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Enum<?> writeError() {
+    public SimpleFsm writeError() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Enum<?> writeReady() {
+    public SimpleFsm writeReady() {
         // TODO Auto-generated method stub
         return null;
     }

@@ -45,4 +45,10 @@ public class SimpleProtocolImpl implements SimpleProtocol {
 
     }
 
+    @Override
+    public void enableSend() {
+        // TODO Auto-generated method stub
+        
+    }
+
 }
