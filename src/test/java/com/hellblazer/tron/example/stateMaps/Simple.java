@@ -15,7 +15,6 @@
  */
 package com.hellblazer.tron.example.stateMaps;
 
-import com.hellblazer.tron.FiniteStateMachine;
 import com.hellblazer.tron.Fsm;
 import com.hellblazer.tron.example.BufferHandler;
 import com.hellblazer.tron.example.SimpleFsm;
@@ -46,23 +45,31 @@ public enum Simple implements SimpleFsm {
     INITIAL() {
         @Override
         public SimpleFsm accepted(BufferHandler handler) {
-            FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
-            fsm.getContext().setHandler(handler);
-            fsm.push(SimpleServer.ACCEPTED);
+            context().setHandler(handler);
+            fsm().push(SimpleServer.ACCEPTED);
             return CONNECTED;
         }
 
         @Override
         public SimpleFsm connected(BufferHandler handler) {
-            FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
-            fsm.getContext().setHandler(handler);
-            fsm.push(SimpleClient.CONNECTED);
+            context().setHandler(handler);
+            fsm().push(SimpleClient.CONNECTED);
             return CONNECTED;
         }
     },
     PROTOCOL_ERROR() {
 
     };
+
+    private static SimpleProtocol context() {
+        SimpleProtocol context = Fsm.thisContext();
+        return context;
+    }
+
+    private static Fsm<SimpleProtocol, SimpleFsm> fsm() {
+        Fsm<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
+        return fsm;
+    }
 
     @Override
     public SimpleFsm accepted(BufferHandler buffer) {
@@ -71,9 +78,6 @@ public enum Simple implements SimpleFsm {
 
     @Override
     public SimpleFsm closing() {
-        FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
-        fsm.push(CONNECTED);
-        fsm.getContext();
         return CLOSED;
     }
 
@@ -84,8 +88,7 @@ public enum Simple implements SimpleFsm {
 
     @Override
     public SimpleFsm protocolError() {
-        // TODO Auto-generated method stub
-        return null;
+        return PROTOCOL_ERROR;
     }
 
     @Override
@@ -95,20 +98,17 @@ public enum Simple implements SimpleFsm {
 
     @Override
     public SimpleFsm readReady() {
-        // TODO Auto-generated method stub
-        return null;
+        return CLOSED;
     }
 
     @Override
     public SimpleFsm sendGoodbye() {
-        // TODO Auto-generated method stub
-        return null;
+        return PROTOCOL_ERROR;
     }
 
     @Override
     public SimpleFsm transmitMessage(String message) {
-        // TODO Auto-generated method stub
-        return null;
+        return PROTOCOL_ERROR;
     }
 
     @Override
@@ -118,7 +118,6 @@ public enum Simple implements SimpleFsm {
 
     @Override
     public SimpleFsm writeReady() {
-        // TODO Auto-generated method stub
-        return null;
+        return PROTOCOL_ERROR;
     }
 }

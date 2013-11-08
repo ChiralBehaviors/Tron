@@ -16,8 +16,8 @@
 package com.hellblazer.tron.example.stateMaps;
 
 import com.hellblazer.tron.Entry;
-import com.hellblazer.tron.FiniteStateMachine;
 import com.hellblazer.tron.Fsm;
+import com.hellblazer.tron.IllegalTransition;
 import com.hellblazer.tron.example.BufferHandler;
 import com.hellblazer.tron.example.SimpleFsm;
 import com.hellblazer.tron.example.SimpleProtocol;
@@ -31,8 +31,7 @@ public enum SimpleClient implements SimpleFsm {
     ACK_MESSAGE() {
         @Entry
         public void entry() {
-            FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
-            fsm.getContext().ackReceived();
+            context().ackReceived();
         }
     },
     AWAIT_ACK() {
@@ -44,29 +43,25 @@ public enum SimpleClient implements SimpleFsm {
     CONNECTED() {
         @Entry
         public void establishClientSession() {
-            FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
-            fsm.getContext().establishClientSession();
+            context().establishClientSession();
         }
     },
     ESTABLISH_SESSION() {
         @Entry
         public void entry() {
-            FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
-            fsm.getContext().awaitAck();
+            context().awaitAck();
         }
 
         @Override
         public SimpleFsm readReady() {
-            FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
-            fsm.getContext().enableSend();
+            context().enableSend();
             return SEND_MESSAGE;
         }
     },
     MessageSent() {
         @Entry
         public void entry() {
-            FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
-            fsm.getContext().awaitAck();
+            context().awaitAck();
         }
 
         @Override
@@ -77,12 +72,13 @@ public enum SimpleClient implements SimpleFsm {
     SEND_GOODBYE {
         @Entry
         public void entry() {
-            FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
-            fsm.getContext().sendGoodbye();
+            context().sendGoodbye();
         }
 
         @Override
         public SimpleFsm readReady() {
+            SimpleFsm popTransition = fsm().pop();
+            popTransition.closing();
             return null;
         }
     },
@@ -94,11 +90,20 @@ public enum SimpleClient implements SimpleFsm {
 
         @Override
         public SimpleFsm transmitMessage(String message) {
-            FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
-            fsm.getContext().transmitMessage(message);
+            context().transmitMessage(message);
             return MessageSent;
         }
     };
+
+    private static SimpleProtocol context() {
+        SimpleProtocol context = Fsm.thisContext();
+        return context;
+    }
+
+    private static Fsm<SimpleProtocol, SimpleFsm> fsm() {
+        Fsm<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
+        return fsm;
+    }
 
     @Override
     public SimpleFsm accepted(BufferHandler buffer) {
@@ -107,55 +112,50 @@ public enum SimpleClient implements SimpleFsm {
 
     @Override
     public SimpleFsm closing() {
-        // TODO Auto-generated method stub
+        SimpleFsm popTransition = fsm().pop();
+        popTransition.closing();
         return null;
     }
 
     @Override
     public SimpleFsm connected(BufferHandler buffer) {
-        // TODO Auto-generated method stub
-        return null;
+        return protocolError();
     }
 
     @Override
     public SimpleFsm protocolError() {
-        // TODO Auto-generated method stub
+        SimpleFsm popTransition = fsm().pop();
+        popTransition.protocolError();
         return null;
     }
 
     @Override
     public SimpleFsm readError() {
-        // TODO Auto-generated method stub
-        return null;
+        return protocolError();
     }
 
     @Override
     public SimpleFsm readReady() {
-        // TODO Auto-generated method stub
-        return null;
+        return protocolError();
     }
 
     @Override
     public SimpleFsm sendGoodbye() {
-        // TODO Auto-generated method stub
-        return null;
+        throw new IllegalTransition(this, "sendGoodbye");
     }
 
     @Override
     public SimpleFsm transmitMessage(String message) {
-        // TODO Auto-generated method stub
-        return null;
+        throw new IllegalTransition(this, "transmitMessage");
     }
 
     @Override
     public SimpleFsm writeError() {
-        // TODO Auto-generated method stub
-        return null;
+        return protocolError();
     }
 
     @Override
     public SimpleFsm writeReady() {
-        // TODO Auto-generated method stub
-        return null;
+        return protocolError();
     }
 }

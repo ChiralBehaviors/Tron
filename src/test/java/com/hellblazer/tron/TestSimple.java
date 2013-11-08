@@ -36,10 +36,9 @@ public class TestSimple {
     @Test
     public void testIt() {
         SimpleProtocol protocol = new SimpleProtocolImpl();
-        FiniteStateMachine<SimpleProtocol, SimpleFsm> fsm = Fsm.construct(protocol,
-                                                                          SimpleFsm.class,
-                                                                          Simple.INITIAL,
-                                                                          true);
+        Fsm<SimpleProtocol, SimpleFsm> fsm = Fsm.construct(protocol,
+                                                           SimpleFsm.class,
+                                                           Simple.INITIAL, true);
         assertNotNull(fsm);
         BufferHandler handler = new BufferHandler();
         fsm.getTransitions().accepted(handler);
