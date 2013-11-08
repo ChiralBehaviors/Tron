@@ -45,6 +45,10 @@ public enum SimpleClient implements SimpleFsm {
         public void establishClientSession() {
             context().establishClientSession();
         }
+        
+        public SimpleFsm writeReady() {
+            return ESTABLISH_SESSION;
+        }
     },
     ESTABLISH_SESSION() {
         @Entry

@@ -236,7 +236,7 @@ public final class Fsm<Context, Transitions> {
     }
 
     private void normalTransition(Enum<?> nextState) {
-        if (nextState != null) { // internal loopback transition
+        if (nextState == null) { // internal loopback transition
             return;
         }
         executeExitAction();

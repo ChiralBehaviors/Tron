@@ -25,7 +25,7 @@ import com.hellblazer.tron.example.SimpleFsm;
 import com.hellblazer.tron.example.SimpleProtocol;
 import com.hellblazer.tron.example.impl.SimpleProtocolImpl;
 import com.hellblazer.tron.example.stateMaps.Simple;
-import com.hellblazer.tron.example.stateMaps.SimpleServer;
+import com.hellblazer.tron.example.stateMaps.SimpleClient;
 
 /**
  * 
@@ -41,8 +41,10 @@ public class TestSimple {
                                                            Simple.INITIAL, true);
         assertNotNull(fsm);
         BufferHandler handler = new BufferHandler();
-        fsm.getTransitions().accepted(handler);
+        fsm.getTransitions().connected(handler);
         assertEquals(handler, ((SimpleProtocolImpl) protocol).getHandler());
-        assertEquals(SimpleServer.ACCEPTED, fsm.getCurrentState());
+        assertEquals(SimpleClient.CONNECTED, fsm.getCurrentState());
+        fsm.getTransitions().writeReady();
+        assertEquals(SimpleClient.ESTABLISH_SESSION, fsm.getCurrentState());
     }
 }
