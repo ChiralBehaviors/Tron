@@ -20,12 +20,12 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import com.hellblazer.tron.example.BufferHandler;
-import com.hellblazer.tron.example.SimpleFsm;
-import com.hellblazer.tron.example.SimpleProtocol;
-import com.hellblazer.tron.example.impl.SimpleProtocolImpl;
-import com.hellblazer.tron.example.stateMaps.Simple;
-import com.hellblazer.tron.example.stateMaps.SimpleClient;
+import com.hellblazer.tron.examples.simpleProtocol.BufferHandler;
+import com.hellblazer.tron.examples.simpleProtocol.SimpleFsm;
+import com.hellblazer.tron.examples.simpleProtocol.SimpleProtocol;
+import com.hellblazer.tron.examples.simpleProtocol.impl.SimpleProtocolImpl;
+import com.hellblazer.tron.examples.simpleProtocol.stateMaps.Simple;
+import com.hellblazer.tron.examples.simpleProtocol.stateMaps.SimpleClient;
 
 /**
  * 

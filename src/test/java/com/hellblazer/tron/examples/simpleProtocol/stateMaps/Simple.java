@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.hellblazer.tron.example.stateMaps;
+package com.hellblazer.tron.examples.simpleProtocol.stateMaps;
 
 import com.hellblazer.tron.Fsm;
-import com.hellblazer.tron.example.BufferHandler;
-import com.hellblazer.tron.example.SimpleFsm;
-import com.hellblazer.tron.example.SimpleProtocol;
+import com.hellblazer.tron.examples.simpleProtocol.BufferHandler;
+import com.hellblazer.tron.examples.simpleProtocol.SimpleFsm;
+import com.hellblazer.tron.examples.simpleProtocol.SimpleProtocol;
 
 /**
  * 

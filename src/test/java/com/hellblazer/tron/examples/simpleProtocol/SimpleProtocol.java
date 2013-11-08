@@ -13,31 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.hellblazer.tron.example;
+package com.hellblazer.tron.examples.simpleProtocol;
 
 /**
  * 
  * @author hhildebrand
  * 
  */
-public interface SimpleFsm {
-    SimpleFsm accepted(BufferHandler buffer);
+public interface SimpleProtocol {
+    void ackReceived();
 
-    SimpleFsm closing();
+    void awaitAck();
 
-    SimpleFsm connected(BufferHandler buffer);
+    void enableSend();
 
-    SimpleFsm protocolError();
+    void establishClientSession();
 
-    SimpleFsm readError();
+    void sendGoodbye();
 
-    SimpleFsm readReady();
+    void setHandler(BufferHandler handler);
 
-    SimpleFsm sendGoodbye();
-
-    SimpleFsm transmitMessage(String message);
-
-    SimpleFsm writeError();
-
-    SimpleFsm writeReady();
+    void transmitMessage(String message);
 }

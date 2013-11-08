@@ -1,7 +1,7 @@
-package com.hellblazer.tron.example.impl;
+package com.hellblazer.tron.examples.simpleProtocol.impl;
 
-import com.hellblazer.tron.example.BufferHandler;
-import com.hellblazer.tron.example.SimpleProtocol;
+import com.hellblazer.tron.examples.simpleProtocol.BufferHandler;
+import com.hellblazer.tron.examples.simpleProtocol.SimpleProtocol;
 
 public class SimpleProtocolImpl implements SimpleProtocol {
     private BufferHandler handler;
