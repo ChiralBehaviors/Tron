@@ -41,7 +41,7 @@ public final class Fsm<Context, Transitions> {
         @Override
         public Object invoke(Object proxy, Method method, Object[] args)
                                                                         throws Throwable {
-            if (method != null) {
+            if (this.method != null) {
                 throw new IllegalStateException(
                                                 String.format("Pop transition '%s' has already been established",
                                                               method.toGenericString()));

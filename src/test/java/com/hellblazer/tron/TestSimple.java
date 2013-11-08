@@ -46,5 +46,11 @@ public class TestSimple {
         assertEquals(SimpleClient.CONNECTED, fsm.getCurrentState());
         fsm.getTransitions().writeReady();
         assertEquals(SimpleClient.ESTABLISH_SESSION, fsm.getCurrentState());
+        fsm.getTransitions().readReady();
+        assertEquals(SimpleClient.SEND_MESSAGE, fsm.getCurrentState());
+        fsm.getTransitions().sendGoodbye();
+        assertEquals(SimpleClient.SEND_GOODBYE, fsm.getCurrentState());
+        fsm.getTransitions().readReady();
+        assertEquals(Simple.CLOSED, fsm.getCurrentState());
     }
 }
