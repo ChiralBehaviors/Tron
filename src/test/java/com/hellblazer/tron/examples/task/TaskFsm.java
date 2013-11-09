@@ -13,18 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.hellblazer.tron;
+package com.hellblazer.tron.examples.task;
 
 /**
  * 
  * @author hhildebrand
  * 
  */
-public class IllegalTransition extends RuntimeException {
+public interface TaskFsm {
+    TaskFsm start(long timeslice);
 
-    private static final long serialVersionUID = 1L;
+    TaskFsm suspended();
 
-    public IllegalTransition() {
-    }
+    TaskFsm done();
 
+    TaskFsm unblock();
+
+    TaskFsm stopped();
+
+    TaskFsm stop();
+
+    TaskFsm block();
+
+    TaskFsm delete();
 }

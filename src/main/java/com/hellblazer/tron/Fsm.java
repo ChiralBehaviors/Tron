@@ -199,8 +199,8 @@ public final class Fsm<Context, Transitions> {
     private void fire(Method t, Object[] arguments) {
         Method stateTransition;
         try {
-            stateTransition = current.getClass().getDeclaredMethod(t.getName(),
-                                                                   t.getParameterTypes());
+            stateTransition = current.getClass().getMethod(t.getName(),
+                                                           t.getParameterTypes());
         } catch (NoSuchMethodException e) {
             throw new NoTransitionException(current, t.getName());
         }

@@ -45,7 +45,7 @@ public enum SimpleClient implements SimpleFsm {
         public void establishClientSession() {
             context().establishClientSession();
         }
-        
+
         public SimpleFsm writeReady() {
             return ESTABLISH_SESSION;
         }
@@ -145,12 +145,12 @@ public enum SimpleClient implements SimpleFsm {
 
     @Override
     public SimpleFsm sendGoodbye() {
-        throw new IllegalTransition(this, "sendGoodbye");
+        throw new IllegalTransition();
     }
 
     @Override
     public SimpleFsm transmitMessage(String message) {
-        throw new IllegalTransition(this, "transmitMessage");
+        throw new IllegalTransition();
     }
 
     @Override
