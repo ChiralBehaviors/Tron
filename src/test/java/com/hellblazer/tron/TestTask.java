@@ -38,9 +38,12 @@ public class TestTask {
         TaskFsm transitions = fsm.getTransitions();
         assertEquals(Task.Suspended, fsm.getCurrentState());
         transitions.start(timeslice);
+        verify(model).continueTask();
+        verify(model).startSliceTimer(timeslice);
         assertEquals(Task.Running, fsm.getCurrentState());
         transitions.suspended();
         assertEquals(Task.Suspended, fsm.getCurrentState());
+        verify(model).stopSliceTimer();
         transitions.start(timeslice);
         transitions.block();
         assertEquals(Task.Blocked, fsm.getCurrentState());
