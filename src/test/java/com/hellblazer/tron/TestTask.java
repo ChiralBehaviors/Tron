@@ -15,9 +15,12 @@
  */
 package com.hellblazer.tron;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 import org.junit.Test;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import org.mockito.internal.verification.Times;
 
 import com.hellblazer.tron.examples.task.Task;
 import com.hellblazer.tron.examples.task.TaskFsm;
@@ -45,12 +48,20 @@ public class TestTask {
         assertEquals(Task.Suspended, fsm.getCurrentState());
         verify(model).stopSliceTimer();
         transitions.start(timeslice);
+        verify(model, new Times(2)).startSliceTimer(timeslice);
         transitions.block();
         assertEquals(Task.Blocked, fsm.getCurrentState());
+        verify(model, new Times(2)).stopSliceTimer();
         transitions.unblock();
         assertEquals(Task.Suspended, fsm.getCurrentState());
         transitions.start(timeslice);
+        verify(model, new Times(3)).startSliceTimer(timeslice);
         transitions.stop();
         assertEquals(Task.Stopping, fsm.getCurrentState());
+        verify(model, new Times(3)).stopSliceTimer();
+        transitions.stopped();
+        assertEquals(Task.Stopped, fsm.getCurrentState());
+        transitions.delete();
+        assertEquals(Task.Deleted, fsm.getCurrentState());
     }
 }
