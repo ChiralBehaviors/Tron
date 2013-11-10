@@ -19,7 +19,6 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.concurrent.locks.Lock;
@@ -239,6 +238,10 @@ public final class Fsm<Context, Transitions> {
         thisFsm.set(this);
         previous = current;
         transition = prettyPrint(t);
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("Executing transition %s on state %s",
+                                    transition, prettyPrint(current)));
+        }
         try {
             Enum<?> nextState;
             try {
@@ -309,9 +312,9 @@ public final class Fsm<Context, Transitions> {
         StringBuilder builder = new StringBuilder();
         builder.append(transition.getName());
         builder.append('(');
-        Type[] parameters = transition.getGenericParameterTypes();
+        Class<?>[] parameters = transition.getParameterTypes();
         for (int i = 0; i < parameters.length; i++) {
-            builder.append(parameters[i]);
+            builder.append(parameters[i].getSimpleName());
             if (i != parameters.length - 1) {
                 builder.append(", ");
             }
