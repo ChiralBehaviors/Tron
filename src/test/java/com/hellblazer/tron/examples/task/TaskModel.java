@@ -21,17 +21,17 @@ package com.hellblazer.tron.examples.task;
  * 
  */
 public interface TaskModel {
+    void blockTask();
+
     void continueTask();
+
+    void releaseResources();
 
     void startSliceTimer(long timeslice);
 
     void stopSliceTimer();
 
-    void suspendTask();
-
-    void releaseResources();
-
     void stopTask();
 
-    void blockTask(); 
+    void suspendTask();
 }

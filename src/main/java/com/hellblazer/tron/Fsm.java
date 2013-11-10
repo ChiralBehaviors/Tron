@@ -19,10 +19,14 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -52,7 +56,8 @@ public final class Fsm<Context, Transitions> {
         }
     }
 
-    static final ThreadLocal<Fsm<?, ?>> thisFsm = new ThreadLocal<>();
+    private static Logger                       DEFAULT_LOG = LoggerFactory.getLogger(Fsm.class);
+    private static final ThreadLocal<Fsm<?, ?>> thisFsm     = new ThreadLocal<>();
 
     public static <Context, Transitions> Fsm<Context, Transitions> construct(Context fsmContext,
                                                                              Class<Transitions> transitions,
@@ -85,6 +90,7 @@ public final class Fsm<Context, Transitions> {
 
     private final Context            context;
     private Enum<?>                  current;
+    private Logger                   log;
     private boolean                  pendingPop = false;
     private Enum<?>                  pendingPush;
     private PopTransition            popTransition;
@@ -92,15 +98,14 @@ public final class Fsm<Context, Transitions> {
     private final Transitions        proxy;
     private final Deque<Enum<?>>     stack      = new ArrayDeque<>();
     private final Lock               sync;
-
     private String                   transition;
-
     private final Class<Transitions> transitionsType;
 
     Fsm(Context context, boolean sync, Class<Transitions> transitionsType) {
         this.context = context;
         this.sync = sync ? new ReentrantLock() : null;
         this.transitionsType = transitionsType;
+        this.log = DEFAULT_LOG;
         @SuppressWarnings("unchecked")
         Transitions facade = (Transitions) Proxy.newProxyInstance(context.getClass().getClassLoader(),
                                                                   new Class<?>[] { transitionsType },
@@ -109,6 +114,10 @@ public final class Fsm<Context, Transitions> {
     }
 
     public void enterStartState() {
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("Entering start state %s",
+                                    prettyPrint(current)));
+        }
         executeEntryAction();
     }
 
@@ -166,11 +175,20 @@ public final class Fsm<Context, Transitions> {
         current = (Enum<?>) state;
     }
 
+    public void setLog(Logger log) {
+        this.log = log;
+    }
+
     private void executeEntryAction() {
         for (Method action : current.getClass().getDeclaredMethods()) {
             if (action.isAnnotationPresent(Entry.class)) {
                 action.setAccessible(true);
                 try {
+                    if (log.isTraceEnabled()) {
+                        log.trace(String.format("Executing entry action %s for state %s",
+                                                prettyPrint(action),
+                                                prettyPrint(current)));
+                    }
                     action.invoke(current, new Object[] {});
                     return;
                 } catch (IllegalAccessException | IllegalArgumentException
@@ -185,6 +203,11 @@ public final class Fsm<Context, Transitions> {
         for (Method action : current.getClass().getDeclaredMethods()) {
             if (action.isAnnotationPresent(Exit.class)) {
                 action.setAccessible(true);
+                if (log.isTraceEnabled()) {
+                    log.trace(String.format("Executing exit action %s for state %s",
+                                            prettyPrint(action),
+                                            prettyPrint(current)));
+                }
                 try {
                     action.invoke(current, new Object[] {});
                     return;
@@ -215,7 +238,7 @@ public final class Fsm<Context, Transitions> {
         Fsm<?, ?> previousFsm = thisFsm.get();
         thisFsm.set(this);
         previous = current;
-        transition = t.toGenericString();
+        transition = prettyPrint(t);
         try {
             Enum<?> nextState;
             try {
@@ -237,9 +260,18 @@ public final class Fsm<Context, Transitions> {
 
     private void normalTransition(Enum<?> nextState) {
         if (nextState == null) { // internal loopback transition
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Internal loopback transition to state %s",
+                                        prettyPrint(nextState)));
+            }
             return;
         }
         executeExitAction();
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("Transitioning to state %s from %s",
+                                    prettyPrint(nextState),
+                                    prettyPrint(current)));
+        }
         current = nextState;
         executeEntryAction();
     }
@@ -248,16 +280,52 @@ public final class Fsm<Context, Transitions> {
         pendingPop = false;
         previous = current;
         executeExitAction();
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("Popping to state %s",
+                                    prettyPrint((Enum<?>) stack.getFirst())));
+        }
         current = stack.pop();
         if (popTransition != null) {
             PopTransition prev = popTransition;
             popTransition = null;
+            if (log.isTraceEnabled()) {
+                log.trace(String.format("Pop transition %s.%s",
+                                        prettyPrint(current),
+                                        prettyPrint(prev.method)));
+            }
             fire(prev.method, prev.args);
         }
     }
 
+    private String prettyPrint(Enum<?> state) {
+        Class<?> enclosingClass = state.getClass().getEnclosingClass();
+        return String.format("%s.%s",
+                             (enclosingClass != null ? enclosingClass
+                                                    : state.getClass()).getSimpleName(),
+                             state.name());
+    }
+
+    private String prettyPrint(Method transition) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(transition.getName());
+        builder.append('(');
+        Type[] parameters = transition.getGenericParameterTypes();
+        for (int i = 0; i < parameters.length; i++) {
+            builder.append(parameters[i]);
+            if (i != parameters.length - 1) {
+                builder.append(", ");
+            }
+        }
+        builder.append(')');
+        return builder.toString();
+    }
+
     private void pushTransition(Enum<?> nextState) {
         normalTransition(nextState);
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("Pushing state %s",
+                                    prettyPrint((Enum<?>) nextState)));
+        }
         stack.push(current);
         current = pendingPush;
         pendingPush = null;

@@ -21,19 +21,19 @@ package com.hellblazer.tron.examples.task;
  * 
  */
 public interface TaskFsm {
-    TaskFsm start(long timeslice);
-
-    TaskFsm suspended();
-
-    TaskFsm done();
-
-    TaskFsm unblock();
-
-    TaskFsm stopped();
-
-    TaskFsm stop();
-
     TaskFsm block();
 
     TaskFsm delete();
+
+    TaskFsm done();
+
+    TaskFsm start(long timeslice);
+
+    TaskFsm stop();
+
+    TaskFsm stopped();
+
+    TaskFsm suspended();
+
+    TaskFsm unblock();
 }
