@@ -15,16 +15,19 @@
  */
 package com.hellblazer.tron;
 
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
 /**
  * 
  * @author hhildebrand
  * 
  */
-public class IllegalTransition extends RuntimeException {
-
-    private static final long serialVersionUID = 1L;
-
-    public IllegalTransition() {
-    }
+@Retention(value = RUNTIME)
+@Target(value = { METHOD })
+public @interface Default {
 
 }

@@ -17,7 +17,7 @@ package com.hellblazer.tron.examples.simpleProtocol.stateMaps;
 
 import com.hellblazer.tron.Entry;
 import com.hellblazer.tron.Fsm;
-import com.hellblazer.tron.IllegalTransition;
+import com.hellblazer.tron.InvalidTransition;
 import com.hellblazer.tron.examples.simpleProtocol.BufferHandler;
 import com.hellblazer.tron.examples.simpleProtocol.SimpleFsm;
 import com.hellblazer.tron.examples.simpleProtocol.SimpleProtocol;
@@ -146,12 +146,12 @@ public enum SimpleClient implements SimpleFsm {
 
     @Override
     public SimpleFsm sendGoodbye() {
-        throw new IllegalTransition();
+        throw new InvalidTransition();
     }
 
     @Override
     public SimpleFsm transmitMessage(String message) {
-        throw new IllegalTransition();
+        throw new InvalidTransition();
     }
 
     @Override
