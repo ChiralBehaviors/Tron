@@ -22,6 +22,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * The annotation indicating the method is an entry action for the enclosing
+ * state enumeration.
  * 
  * @author hhildebrand
  * 

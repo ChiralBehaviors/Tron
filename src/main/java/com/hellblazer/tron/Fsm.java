@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * A Finite State Machine implementation.
  * 
  * @author hhildebrand
  * 
@@ -58,6 +59,21 @@ public final class Fsm<Context, Transitions> {
     private static Logger                       DEFAULT_LOG = LoggerFactory.getLogger(Fsm.class);
     private static final ThreadLocal<Fsm<?, ?>> thisFsm     = new ThreadLocal<>();
 
+    /**
+     * Construct a new instance of a finite state machine.
+     * 
+     * @param fsmContext
+     *            - the object used as the action context for this FSM
+     * @param transitions
+     *            - the interface class used to define the transitions for this
+     *            FSM
+     * @param initialState
+     *            - the initial state of the FSM
+     * @param sync
+     *            - true if this FSM is to synchronize state transitions. This
+     *            is required for multi-threaded use of the FSM
+     * @return the Fsm instance
+     */
     public static <Context, Transitions> Fsm<Context, Transitions> construct(Context fsmContext,
                                                                              Class<Transitions> transitions,
                                                                              Enum<?> initialState,
@@ -75,12 +91,20 @@ public final class Fsm<Context, Transitions> {
         return fsm;
     }
 
+    /**
+     * 
+     * @return the Context of the currently executing Fsm
+     */
     public static <Context> Context thisContext() {
         @SuppressWarnings("unchecked")
         Fsm<Context, ?> fsm = (Fsm<Context, ?>) thisFsm.get();
         return fsm.getContext();
     }
 
+    /**
+     * 
+     * @return the currrently executing Fsm
+     */
     public static <Context, Transitions> Fsm<Context, Transitions> thisFsm() {
         @SuppressWarnings("unchecked")
         Fsm<Context, Transitions> fsm = (Fsm<Context, Transitions>) thisFsm.get();
@@ -112,6 +136,10 @@ public final class Fsm<Context, Transitions> {
         proxy = facade;
     }
 
+    /**
+     * Execute the initial state's entry action. Note that we do not guard
+     * against multiple invocations.
+     */
     public void enterStartState() {
         if (log.isTraceEnabled()) {
             log.trace(String.format("Entering start state %s",
@@ -120,30 +148,59 @@ public final class Fsm<Context, Transitions> {
         executeEntryAction();
     }
 
+    /**
+     * 
+     * @return the action context object of this Fsm
+     */
     public Context getContext() {
         return context;
     }
 
+    /**
+     * 
+     * @return the current state of the Fsm
+     */
     public Transitions getCurrentState() {
         @SuppressWarnings("unchecked")
         Transitions transitions = (Transitions) current;
         return transitions;
     }
 
+    /**
+     * 
+     * @return the previous state of the Fsm, or null if no previous state
+     */
     public Transitions getPreviousState() {
         @SuppressWarnings("unchecked")
         Transitions transitions = (Transitions) previous;
         return transitions;
     }
 
+    /**
+     * 
+     * @return the String representation of the current transition
+     */
     public String getTransition() {
         return transition;
     }
 
+    /**
+     * 
+     * @return the Transitions object that drives this Fsm through its
+     *         transitions
+     */
     public Transitions getTransitions() {
         return proxy;
     }
 
+    /**
+     * Pop the state off of the stack of pushed states. This state will become
+     * the current state of the Fsm. Answer the Transitions object that may be
+     * used to send a transition to the popped state.
+     * 
+     * @return the Transitions object that may be used to send a transition to
+     *         the popped state.
+     */
     public Transitions pop() {
         if (pendingPop) {
             throw new IllegalStateException("State has already been popped");
@@ -163,6 +220,13 @@ public final class Fsm<Context, Transitions> {
         return pendingTransition;
     }
 
+    /**
+     * Push the current state of the Fsm on the state stack. The supplied state
+     * becomes the current state of the Fsm
+     * 
+     * @param state
+     *            - the new current state of the Fsm.
+     */
     public void push(Transitions state) {
         if (pendingPop) {
             throw new IllegalStateException("Cannot push after pop");
@@ -170,10 +234,23 @@ public final class Fsm<Context, Transitions> {
         pendingPush = (Enum<?>) state;
     }
 
+    /**
+     * Set the current state of the Fsm. The entry action for this state will
+     * not be called.
+     * 
+     * @param state
+     *            - the new current state of the Fsm
+     */
     public void setCurrentState(Transitions state) {
         current = (Enum<?>) state;
     }
 
+    /**
+     * Set the Logger for this Fsm.
+     * 
+     * @param log
+     *            - the Logger of this Fsm
+     */
     public void setLog(Logger log) {
         this.log = log;
     }
@@ -224,7 +301,10 @@ public final class Fsm<Context, Transitions> {
             stateTransition = current.getClass().getMethod(t.getName(),
                                                            t.getParameterTypes());
         } catch (NoSuchMethodException e) {
-            throw new NoTransitionException(current, t.getName());
+            throw new IllegalStateException(
+                                            String.format("The state %s does not implement the transition %s",
+                                                          prettyPrint(current),
+                                                          prettyPrint(t)));
         }
         stateTransition.setAccessible(true);
         if (sync != null) {

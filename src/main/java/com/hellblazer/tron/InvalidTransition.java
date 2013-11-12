@@ -16,6 +16,8 @@
 package com.hellblazer.tron;
 
 /**
+ * The exception indicating that the transition is invalid for the current state
+ * of the Fsm
  * 
  * @author hhildebrand
  * 
