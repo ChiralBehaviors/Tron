@@ -355,11 +355,28 @@ public final class Fsm<Context, Transitions> {
      * @return the next state
      */
     private Enum<?> fireTransition(Method stateTransition, Object[] arguments) {
-        try {
+        if (stateTransition.isAnnotationPresent(Default.class)) {
             if (log.isTraceEnabled()) {
-                log.trace(String.format("Executing transition %s on state %s",
+                log.trace(String.format("Executing default transition %s on state %s",
                                         transition, prettyPrint(current)));
             }
+            try {
+                return (Enum<?>) stateTransition.invoke(current,
+                                                        (Object[]) null);
+            } catch (IllegalAccessException | IllegalArgumentException
+                    | InvocationTargetException e) {
+                throw new IllegalStateException(
+                                                String.format("Unable to invoke transition %s on state %s",
+                                                              prettyPrint(stateTransition),
+                                                              prettyPrint(current)),
+                                                e);
+            }
+        }
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("Executing transition %s on state %s",
+                                    transition, prettyPrint(current)));
+        }
+        try {
             return (Enum<?>) stateTransition.invoke(current, arguments);
         } catch (IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
