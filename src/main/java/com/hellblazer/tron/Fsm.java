@@ -255,6 +255,12 @@ public final class Fsm<Context, Transitions> {
         this.log = log;
     }
 
+    @Override
+    public String toString() {
+        return "Fsm [current=" + current + ", previous=" + previous
+               + ", transition=" + transition + "]";
+    }
+
     private void executeEntryAction() {
         for (Method action : current.getClass().getDeclaredMethods()) {
             if (action.isAnnotationPresent(Entry.class)) {
@@ -365,7 +371,7 @@ public final class Fsm<Context, Transitions> {
         executeExitAction();
         if (log.isTraceEnabled()) {
             log.trace(String.format("Popping to state %s",
-                                    prettyPrint((Enum<?>) stack.getFirst())));
+                                    prettyPrint(stack.getFirst())));
         }
         current = stack.pop();
         if (popTransition != null) {
@@ -381,6 +387,9 @@ public final class Fsm<Context, Transitions> {
     }
 
     private String prettyPrint(Enum<?> state) {
+        if (state == null) {
+            return "null";
+        }
         Class<?> enclosingClass = state.getClass().getEnclosingClass();
         return String.format("%s.%s",
                              (enclosingClass != null ? enclosingClass
@@ -406,8 +415,7 @@ public final class Fsm<Context, Transitions> {
     private void pushTransition(Enum<?> nextState) {
         normalTransition(nextState);
         if (log.isTraceEnabled()) {
-            log.trace(String.format("Pushing state %s",
-                                    prettyPrint((Enum<?>) nextState)));
+            log.trace(String.format("Pushing state %s", prettyPrint(nextState)));
         }
         stack.push(current);
         current = pendingPush;
