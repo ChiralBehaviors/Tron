@@ -22,6 +22,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * The annotation marking a method as the default transition for the state. The
+ * method must take no arguments
  * 
  * @author hhildebrand
  * 
@@ -29,5 +31,4 @@ import java.lang.annotation.Target;
 @Retention(value = RUNTIME)
 @Target(value = { METHOD })
 public @interface Default {
-
 }
