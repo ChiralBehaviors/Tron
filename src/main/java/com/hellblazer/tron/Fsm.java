@@ -336,7 +336,14 @@ public final class Fsm<Context, Transitions> {
         previous = current;
         transition = prettyPrint(t);
         try {
-            transitionTo(fireTransition(lookupTransition(t), arguments));
+            Enum<?> nextState;
+            try {
+                nextState = fireTransition(lookupTransition(t), arguments);
+            } catch (InvalidTransition e) {
+                nextState = fireTransition(lookupDefaultTransition(t),
+                                           arguments);
+            }
+            transitionTo(nextState);
         } finally {
             thisFsm.set(previousFsm);
             if (sync != null) {
@@ -388,15 +395,26 @@ public final class Fsm<Context, Transitions> {
         }
     }
 
+    private Method lookupDefaultTransition(Method t) {
+        // look for a @Default transition for the state singleton
+        for (Method defaultTransition : current.getClass().getDeclaredMethods()) {
+            if (defaultTransition.isAnnotationPresent(Default.class)) {
+                defaultTransition.setAccessible(true);
+                return defaultTransition;
+            }
+        }
+        // look for a @Default transition for the state on the enclosing enum class
+        for (Method defaultTransition : current.getClass().getMethods()) {
+            if (defaultTransition.isAnnotationPresent(Default.class)) {
+                defaultTransition.setAccessible(true);
+                return defaultTransition;
+            }
+        }
+        throw new InvalidTransition(String.format(prettyPrint(t)));
+    }
+
     /**
-     * Search for the transition.
-     * 
-     * <pre>
-     * Search order is:
-     *     Declared method on the state enum
-     *     @Default transition declared on the state enum
-     *     Transition defined in the enum's enclosing class
-     * </pre>
+     * Lookup the transition.
      * 
      * @param t
      *            - the transition defined in the interface
@@ -407,28 +425,13 @@ public final class Fsm<Context, Transitions> {
         Method stateTransition = null;
         try {
             // First we try declared methods on the state
-            stateTransition = current.getClass().getDeclaredMethod(t.getName(),
-                                                                   t.getParameterTypes());
-        } catch (NoSuchMethodException e) {
-            // Next, look for a @Default transition for the state
-            for (Method defaultTransition : current.getClass().getDeclaredMethods()) {
-                if (defaultTransition.isAnnotationPresent(Default.class)) {
-                    stateTransition = defaultTransition;
-                    break;
-                }
-            }
-            if (stateTransition == null) {
-                try {
-                    // Use the default transition defined by the enclosing enum class of the state
-                    stateTransition = current.getClass().getMethod(t.getName(),
-                                                                   t.getParameterTypes());
-                } catch (NoSuchMethodException | SecurityException e1) {
-                    throw new IllegalStateException(
-                                                    String.format("Inconcievable!  The state %s does not implement the transition %s",
-                                                                  prettyPrint(current),
-                                                                  prettyPrint(t)));
-                }
-            }
+            stateTransition = current.getClass().getMethod(t.getName(),
+                                                           t.getParameterTypes());
+        } catch (NoSuchMethodException | SecurityException e1) {
+            throw new IllegalStateException(
+                                            String.format("Inconcievable!  The state %s does not implement the transition %s",
+                                                          prettyPrint(current),
+                                                          prettyPrint(t)));
         }
         stateTransition.setAccessible(true);
         return stateTransition;
