@@ -114,6 +114,7 @@ public final class Fsm<Context, Transitions> {
     private final Context            context;
     private Enum<?>                  current;
     private Logger                   log;
+    private String                   name;
     private boolean                  pendingPop = false;
     private Enum<?>                  pendingPush;
     private PopTransition            popTransition;
@@ -172,6 +173,10 @@ public final class Fsm<Context, Transitions> {
      */
     public Logger getLog() {
         return log;
+    }
+
+    public String getName() {
+        return name;
     }
 
     /**
@@ -269,10 +274,15 @@ public final class Fsm<Context, Transitions> {
         this.log = log;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public String toString() {
-        return "Fsm [current=" + current + ", previous=" + previous
-               + ", transition=" + transition + "]";
+        return String.format("Fsm [name = %s, current=%s, previous=%s, transition=%s]",
+                             name, prettyPrint(current), prettyPrint(previous),
+                             transition);
     }
 
     private void executeEntryAction() {
