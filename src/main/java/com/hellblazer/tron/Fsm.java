@@ -548,12 +548,11 @@ public final class Fsm<Context, Transitions> {
     private void pushTransition(Enum<?> nextState) {
         Enum<?> pushed = pendingPush;
         pendingPush = null;
-        stack.push(current);
-
         normalTransition(nextState);
+        stack.push(current);
         if (log.isTraceEnabled()) {
-            log.trace(String.format("Pushing state to state %s from %s",
-                                    prettyPrint(nextState),
+            log.trace(String.format("Pushing to state %s from %s",
+                                    prettyPrint(pushed),
                                     prettyPrint(current)));
         }
         current = pushed;
