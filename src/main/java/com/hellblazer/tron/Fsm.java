@@ -350,7 +350,7 @@ public final class Fsm<Context, Transitions> {
             try {
                 nextState = fireTransition(lookupTransition(t), arguments);
             } catch (InvalidTransition e) {
-                nextState = fireTransition(lookupDefaultTransition(t),
+                nextState = fireTransition(lookupDefaultTransition(e, t),
                                            arguments);
             }
             transitionTo(nextState);
@@ -369,6 +369,7 @@ public final class Fsm<Context, Transitions> {
      *            - the transition method to execute
      * @param arguments
      *            - the arguments of the method
+     * 
      * @return the next state
      */
     private Enum<?> fireTransition(Method stateTransition, Object[] arguments) {
@@ -395,8 +396,16 @@ public final class Fsm<Context, Transitions> {
         }
         try {
             return (Enum<?>) stateTransition.invoke(current, arguments);
-        } catch (IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException e) {
+        } catch (IllegalAccessException | IllegalArgumentException e) {
+            throw new IllegalStateException(
+                                            String.format("Unable to invoke transition %s on state %s",
+                                                          prettyPrint(stateTransition),
+                                                          prettyPrint(current)),
+                                            e);
+        } catch (InvocationTargetException e) {
+            if (e.getTargetException() instanceof InvalidTransition) {
+                throw (InvalidTransition) e.getTargetException();
+            }
             throw new IllegalStateException(
                                             String.format("Unable to invoke transition %s on state %s",
                                                           prettyPrint(stateTransition),
@@ -405,7 +414,8 @@ public final class Fsm<Context, Transitions> {
         }
     }
 
-    private Method lookupDefaultTransition(Method t) {
+    private Method lookupDefaultTransition(InvalidTransition previousException,
+                                           Method t) {
         // look for a @Default transition for the state singleton
         for (Method defaultTransition : current.getClass().getDeclaredMethods()) {
             if (defaultTransition.isAnnotationPresent(Default.class)) {
@@ -420,7 +430,11 @@ public final class Fsm<Context, Transitions> {
                 return defaultTransition;
             }
         }
-        throw new InvalidTransition(String.format(prettyPrint(t)));
+        if (previousException == null) {
+            throw new InvalidTransition(String.format(prettyPrint(t)));
+        } else {
+            throw previousException;
+        }
     }
 
     /**
