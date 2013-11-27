@@ -297,9 +297,14 @@ public final class Fsm<Context, Transitions> {
                     }
                     action.invoke(current, new Object[] {});
                     return;
-                } catch (IllegalAccessException | IllegalArgumentException
-                        | InvocationTargetException e) {
+                } catch (IllegalAccessException | IllegalArgumentException e) {
                     throw new IllegalStateException(e);
+                } catch (InvocationTargetException e) {
+                    Throwable targetException = e.getTargetException();
+                    if (targetException instanceof RuntimeException) {
+                        throw (RuntimeException) targetException;
+                    }
+                    throw new IllegalStateException(targetException);
                 }
             }
         }
@@ -552,8 +557,7 @@ public final class Fsm<Context, Transitions> {
         stack.push(current);
         if (log.isTraceEnabled()) {
             log.trace(String.format("Pushing to state %s from %s",
-                                    prettyPrint(pushed),
-                                    prettyPrint(current)));
+                                    prettyPrint(pushed), prettyPrint(current)));
         }
         current = pushed;
         executeEntryAction();
