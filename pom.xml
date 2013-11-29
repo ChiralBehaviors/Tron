@@ -24,6 +24,7 @@
 
 	<modules>
 		<module>framework</module>
+		<module>tron-documentation</module>
 	</modules>
 
 	<build>
