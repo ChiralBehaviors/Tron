@@ -7,6 +7,9 @@
 	<packaging>pom</packaging>
 	<name>Tron - a FSM framework</name>
 	<description>A framework for creating finite state machines</description>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
 	<url>https://github.com/Hellblazer/Tron</url>
 
