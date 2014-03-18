@@ -39,6 +39,20 @@ public class TestSimple {
         Fsm<SimpleProtocol, SimpleFsm> fsm = Fsm.construct(protocol,
                                                            SimpleFsm.class,
                                                            Simple.INITIAL, true);
+        verifyFsmStates(fsm, protocol);
+    }
+    
+    @Test
+    public void testItWithCustomClassLoader() {
+        SimpleProtocol protocol = new SimpleProtocolImpl();
+        Fsm<SimpleProtocol, SimpleFsm> fsm = Fsm.construct(protocol,
+                                                           SimpleFsm.class,
+                                                           SimpleFsm.class.getClassLoader(),
+                                                           Simple.INITIAL, true);
+        verifyFsmStates(fsm, protocol);
+    }
+    
+    private void verifyFsmStates(Fsm<SimpleProtocol, SimpleFsm> fsm, SimpleProtocol protocol) {
         assertNotNull(fsm);
         BufferHandler handler = new BufferHandler();
         fsm.getTransitions().connected(handler);
