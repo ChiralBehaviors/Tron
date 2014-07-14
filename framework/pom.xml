@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.hellblazer</groupId>
 		<artifactId>tron.app</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.0.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>tron</artifactId>
 	<name>Tron</name>
