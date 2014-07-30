@@ -303,13 +303,17 @@ public final class Fsm<Context, Transitions> {
         for (Method action : current.getClass().getDeclaredMethods()) {
             if (action.isAnnotationPresent(Entry.class)) {
                 action.setAccessible(true);
+                if (log.isTraceEnabled()) {
+                    log.trace(String.format("Executing entry action %s for state %s",
+                                            prettyPrint(action),
+                                            prettyPrint(current)));
+                }
                 try {
-                    if (log.isTraceEnabled()) {
-                        log.trace(String.format("Executing entry action %s for state %s",
-                                                prettyPrint(action),
-                                                prettyPrint(current)));
-                    }
-                    action.invoke(current, new Object[] {});
+                    // For entry actions with parameters, inject the context
+                    if (action.getParameterTypes().length > 0)
+                        action.invoke(current, context);
+                    else
+                        action.invoke(current, new Object[] {});
                     return;
                 } catch (IllegalAccessException | IllegalArgumentException e) {
                     throw new IllegalStateException(e);
@@ -334,7 +338,11 @@ public final class Fsm<Context, Transitions> {
                                             prettyPrint(current)));
                 }
                 try {
-                    action.invoke(current, new Object[] {});
+                    // For exit action with parameters, inject the context
+                    if (action.getParameterTypes().length > 0)
+                        action.invoke(current, context);
+                    else
+                        action.invoke(current, new Object[] {});
                     return;
                 } catch (IllegalAccessException | IllegalArgumentException
                         | InvocationTargetException e) {
