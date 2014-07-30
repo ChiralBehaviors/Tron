@@ -41,9 +41,10 @@ public enum SimpleClient implements SimpleFsm {
         }
     },
     CONNECTED() {
+        // Context injection into Entry action
         @Entry
-        public void establishClientSession() {
-            context().establishClientSession();
+        public void establishClientSession(SimpleProtocol context) {
+            context.establishClientSession();
         }
 
         @Override

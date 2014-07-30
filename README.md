@@ -36,12 +36,12 @@ For releases:
         <url>http://repository-hal900000.forge.cloudbees.com/release/</url>
     </repository>
 
-The current version of Tron is 0.0.1.  To use Tron in your project, add the following dependency in your project's pom.xml:
+The current version of Tron is 0.0.2-SNAPSHOT.  To use Tron in your project, add the following dependency in your project's pom.xml:
 
 
     <dependency>
         <groupId>com.hellblazer</groupId>
         <artifactId>tron</artifactId>
-        <version>0.0.1</version>
+        <version>0.0.2-SNAPSHOT</version>
     </dependency>
     
