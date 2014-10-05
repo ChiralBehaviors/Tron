@@ -365,7 +365,7 @@ public final class Fsm<Context, Transitions> {
             try {
                 sync.lockInterruptibly();
             } catch (InterruptedException e) {
-                return;
+                throw new RuntimeException(String.format("Unable to fire transition [%s] due to thread interruption", t.getName()), e);
             }
         }
         Fsm<?, ?> previousFsm = thisFsm.get();
