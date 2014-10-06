@@ -3,3 +3,8 @@
 **/.project
 **/.settings
 **/src/site
+/target
+/.classpath
+/.project
+/.settings
+/src/site
