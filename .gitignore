@@ -1,4 +1,5 @@
 **/target
+<<<<<<< HEAD
 **/.classpath
 **/.project
 **/.settings
@@ -7,4 +8,4 @@
 /.classpath
 /.project
 /.settings
-/src/site
+/src/site 

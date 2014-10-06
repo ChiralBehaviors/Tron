@@ -60,6 +60,16 @@ public final class Fsm<Context, Transitions> {
     private static final ThreadLocal<Fsm<?, ?>> thisFsm     = new ThreadLocal<>();
 
     /**
+     * Construct a new instance of a finite state machine with a default ClassLoader.
+     */
+    public static <Context, Transitions> Fsm<Context, Transitions> construct(Context fsmContext,
+                                                                             Class<Transitions> transitions,
+                                                                             Enum<?> initialState,
+                                                                             boolean sync) {
+    	return construct(fsmContext, transitions, fsmContext.getClass().getClassLoader(), initialState, sync);
+    }
+
+    /**
      * Construct a new instance of a finite state machine.
      * 
      * @param fsmContext
@@ -67,6 +77,9 @@ public final class Fsm<Context, Transitions> {
      * @param transitions
      *            - the interface class used to define the transitions for this
      *            FSM
+     * @param transitionsCL
+     *            - the class loader to be used to load the transitions interface
+     *            class
      * @param initialState
      *            - the initial state of the FSM
      * @param sync
@@ -76,6 +89,7 @@ public final class Fsm<Context, Transitions> {
      */
     public static <Context, Transitions> Fsm<Context, Transitions> construct(Context fsmContext,
                                                                              Class<Transitions> transitions,
+                                                                             ClassLoader transitionsCL,
                                                                              Enum<?> initialState,
                                                                              boolean sync) {
         if (!transitions.isAssignableFrom(initialState.getClass())) {
@@ -84,7 +98,7 @@ public final class Fsm<Context, Transitions> {
                                                              initialState,
                                                              transitions));
         }
-        Fsm<Context, Transitions> fsm = new Fsm<>(fsmContext, sync, transitions);
+        Fsm<Context, Transitions> fsm = new Fsm<>(fsmContext, sync, transitions, transitionsCL);
         @SuppressWarnings("unchecked")
         Transitions initial = (Transitions) initialState;
         fsm.setCurrentState(initial);
@@ -125,13 +139,13 @@ public final class Fsm<Context, Transitions> {
     private String                   transition;
     private final Class<Transitions> transitionsType;
 
-    Fsm(Context context, boolean sync, Class<Transitions> transitionsType) {
+    Fsm(Context context, boolean sync, Class<Transitions> transitionsType, ClassLoader transitionsCL) {
         this.context = context;
         this.sync = sync ? new ReentrantLock() : null;
         this.transitionsType = transitionsType;
         this.log = DEFAULT_LOG;
         @SuppressWarnings("unchecked")
-        Transitions facade = (Transitions) Proxy.newProxyInstance(context.getClass().getClassLoader(),
+        Transitions facade = (Transitions) Proxy.newProxyInstance(transitionsCL,
                                                                   new Class<?>[] { transitionsType },
                                                                   transitionsHandler());
         proxy = facade;
@@ -289,13 +303,17 @@ public final class Fsm<Context, Transitions> {
         for (Method action : current.getClass().getDeclaredMethods()) {
             if (action.isAnnotationPresent(Entry.class)) {
                 action.setAccessible(true);
+                if (log.isTraceEnabled()) {
+                    log.trace(String.format("Executing entry action %s for state %s",
+                                            prettyPrint(action),
+                                            prettyPrint(current)));
+                }
                 try {
-                    if (log.isTraceEnabled()) {
-                        log.trace(String.format("Executing entry action %s for state %s",
-                                                prettyPrint(action),
-                                                prettyPrint(current)));
-                    }
-                    action.invoke(current, new Object[] {});
+                    // For entry actions with parameters, inject the context
+                    if (action.getParameterTypes().length > 0)
+                        action.invoke(current, context);
+                    else
+                        action.invoke(current, new Object[] {});
                     return;
                 } catch (IllegalAccessException | IllegalArgumentException e) {
                     throw new IllegalStateException(e);
@@ -320,7 +338,11 @@ public final class Fsm<Context, Transitions> {
                                             prettyPrint(current)));
                 }
                 try {
-                    action.invoke(current, new Object[] {});
+                    // For exit action with parameters, inject the context
+                    if (action.getParameterTypes().length > 0)
+                        action.invoke(current, context);
+                    else
+                        action.invoke(current, new Object[] {});
                     return;
                 } catch (IllegalAccessException | IllegalArgumentException
                         | InvocationTargetException e) {
@@ -343,7 +365,7 @@ public final class Fsm<Context, Transitions> {
             try {
                 sync.lockInterruptibly();
             } catch (InterruptedException e) {
-                return;
+                throw new RuntimeException(String.format("Unable to fire transition [%s] due to thread interruption", t.getName()), e);
             }
         }
         Fsm<?, ?> previousFsm = thisFsm.get();
