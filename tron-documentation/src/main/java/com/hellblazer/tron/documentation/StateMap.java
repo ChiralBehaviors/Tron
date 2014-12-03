@@ -25,6 +25,7 @@ import com.sun.source.tree.ClassTree;
  * @author hhildebrand
  * 
  */
+@SuppressWarnings("unused")
 public class StateMap {
     private ClassTree              enumeration;
     private final List<State>      states             = new ArrayList<>();

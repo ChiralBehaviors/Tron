@@ -23,6 +23,7 @@ import java.util.List;
  * @author hhildebrand
  * 
  */
+@SuppressWarnings("unused")
 public class State {
     private Object                 state;
     private final List<Transition> transitions = new ArrayList<>();

@@ -23,6 +23,7 @@ import com.sun.source.tree.MethodTree;
  * @author hhildebrand
  * 
  */
+@SuppressWarnings("unused")
 public class Transition {
     private ConditionalExpressionTree guard;
     private MethodTree                transition;

@@ -28,6 +28,7 @@ import com.sun.source.tree.MethodTree;
  * @author hhildebrand
  * 
  */
+@SuppressWarnings("unused")
 public class Fsm {
     private final List<URL>      stateMapSources;
     private final URL            contextSource;
