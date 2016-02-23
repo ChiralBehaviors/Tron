@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.chiralbehaviors</groupId>
 	<artifactId>tron.app</artifactId>
-	<version>0.0.4</version>
+	<version>0.0.5-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Tron - Top level app</name>
 	<description>A framework for creating finite state machines</description>
