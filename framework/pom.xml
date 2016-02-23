@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.chiralbehaviors</groupId>
 		<artifactId>tron.app</artifactId>
-		<version>0.0.5-SNAPSHOT</version>
+		<version>0.0.4</version>
 	</parent>
 	<artifactId>tron</artifactId>
 	<name>Tron - A finite state machine framework</name>
