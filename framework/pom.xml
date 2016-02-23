@@ -7,7 +7,7 @@
 		<version>0.0.4</version>
 	</parent>
 	<artifactId>tron</artifactId>
-	<name>Tron</name>
+	<name>Tron - A finite state machine framework</name>
 	<description>A framework for creating finite state machines</description>
 
 	<url>https://github.com/ChiralBehaviors/Tron</url>

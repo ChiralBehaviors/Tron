@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.hellblazer.tron.documentation;
+package com.chiralbehaviors.tron.documentation;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+
+import com.hellblazer.tron.documentation.Fsm;
 
 /**
  * @author hhildebrand
@@ -35,12 +37,15 @@ public class TestFsm {
     private final URL       transitionsSourceUrl;
 
     public TestFsm() throws MalformedURLException {
-        File base = new File(
-                             "src/test/java/com/hellblazer/tron/documentation/test/");
-        contextSourceUrl = new File(base, "Telephone.java").toURI().toURL();
-        transitionsSourceUrl = new File(base, "TelephoneFsm.java").toURI().toURL();
-        stateMapSources.add(new File(base, "Call.java").toURI().toURL());
-        stateMapSources.add(new File(base, "PhoneNumber.java").toURI().toURL());
+        File base = new File("src/test/java/com/chiralbehaviors/tron/documentation/test/");
+        contextSourceUrl = new File(base, "Telephone.java").toURI()
+                                                           .toURL();
+        transitionsSourceUrl = new File(base, "TelephoneFsm.java").toURI()
+                                                                  .toURL();
+        stateMapSources.add(new File(base, "Call.java").toURI()
+                                                       .toURL());
+        stateMapSources.add(new File(base, "PhoneNumber.java").toURI()
+                                                              .toURL());
     }
 
     @Test

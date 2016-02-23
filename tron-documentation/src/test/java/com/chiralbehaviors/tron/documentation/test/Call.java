@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.hellblazer.tron.documentation.test;
+package com.chiralbehaviors.tron.documentation.test;
 
-import com.hellblazer.tron.Default;
-import com.hellblazer.tron.Entry;
-import com.hellblazer.tron.Exit;
-import com.hellblazer.tron.Fsm;
-import com.hellblazer.tron.InvalidTransition;
+import com.chiralbehaviors.tron.Default;
+import com.chiralbehaviors.tron.Entry;
+import com.chiralbehaviors.tron.Exit;
+import com.chiralbehaviors.tron.Fsm;
+import com.chiralbehaviors.tron.InvalidTransition;
 
 /**
  * 
