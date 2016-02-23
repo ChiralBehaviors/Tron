@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Hal Hildebrand, all rights reserved.
+ * Copyright (c) 2013 ChiralBehaviors LLC, all rights reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.hellblazer.tron;
+package com.chiralbehaviors.tron;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import com.hellblazer.tron.examples.simpleProtocol.BufferHandler;
-import com.hellblazer.tron.examples.simpleProtocol.SimpleFsm;
-import com.hellblazer.tron.examples.simpleProtocol.SimpleProtocol;
-import com.hellblazer.tron.examples.simpleProtocol.impl.SimpleProtocolImpl;
-import com.hellblazer.tron.examples.simpleProtocol.stateMaps.Simple;
-import com.hellblazer.tron.examples.simpleProtocol.stateMaps.SimpleClient;
+import com.chiralbehaviors.tron.examples.simpleProtocol.BufferHandler;
+import com.chiralbehaviors.tron.examples.simpleProtocol.SimpleFsm;
+import com.chiralbehaviors.tron.examples.simpleProtocol.SimpleProtocol;
+import com.chiralbehaviors.tron.examples.simpleProtocol.impl.SimpleProtocolImpl;
+import com.chiralbehaviors.tron.examples.simpleProtocol.stateMaps.Simple;
+import com.chiralbehaviors.tron.examples.simpleProtocol.stateMaps.SimpleClient;
 
 /**
  * 
@@ -38,33 +38,41 @@ public class TestSimple {
         SimpleProtocol protocol = new SimpleProtocolImpl();
         Fsm<SimpleProtocol, SimpleFsm> fsm = Fsm.construct(protocol,
                                                            SimpleFsm.class,
-                                                           Simple.INITIAL, true);
+                                                           Simple.INITIAL,
+                                                           true);
         verifyFsmStates(fsm, protocol);
     }
-    
+
     @Test
     public void testItWithCustomClassLoader() {
         SimpleProtocol protocol = new SimpleProtocolImpl();
         Fsm<SimpleProtocol, SimpleFsm> fsm = Fsm.construct(protocol,
                                                            SimpleFsm.class,
                                                            SimpleFsm.class.getClassLoader(),
-                                                           Simple.INITIAL, true);
+                                                           Simple.INITIAL,
+                                                           true);
         verifyFsmStates(fsm, protocol);
     }
-    
-    private void verifyFsmStates(Fsm<SimpleProtocol, SimpleFsm> fsm, SimpleProtocol protocol) {
+
+    private void verifyFsmStates(Fsm<SimpleProtocol, SimpleFsm> fsm,
+                                 SimpleProtocol protocol) {
         assertNotNull(fsm);
         BufferHandler handler = new BufferHandler();
-        fsm.getTransitions().connected(handler);
+        fsm.getTransitions()
+           .connected(handler);
         assertEquals(handler, ((SimpleProtocolImpl) protocol).getHandler());
         assertEquals(SimpleClient.CONNECTED, fsm.getCurrentState());
-        fsm.getTransitions().writeReady();
+        fsm.getTransitions()
+           .writeReady();
         assertEquals(SimpleClient.ESTABLISH_SESSION, fsm.getCurrentState());
-        fsm.getTransitions().readReady();
+        fsm.getTransitions()
+           .readReady();
         assertEquals(SimpleClient.SEND_MESSAGE, fsm.getCurrentState());
-        fsm.getTransitions().sendGoodbye();
+        fsm.getTransitions()
+           .sendGoodbye();
         assertEquals(SimpleClient.SEND_GOODBYE, fsm.getCurrentState());
-        fsm.getTransitions().readReady();
+        fsm.getTransitions()
+           .readReady();
         assertEquals(Simple.CLOSED, fsm.getCurrentState());
     }
 }

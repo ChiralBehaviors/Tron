@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Hal Hildebrand, all rights reserved.
+ * Copyright (c) 2013 ChiralBehaviors LLC, all rights reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.hellblazer.tron;
+package com.chiralbehaviors.tron;
+
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
- * The exception indicating that the transition is invalid for the current state
- * of the Fsm
+ * The annotation marking a method as the default transition for the state. The
+ * method must take no arguments
  * 
  * @author hhildebrand
  * 
  */
-public class InvalidTransition extends RuntimeException {
-
-    private static final long serialVersionUID = 1L;
-
-    public InvalidTransition() {
-    }
-
-    public InvalidTransition(String msg) {
-        super(msg);
-    }
+@Retention(value = RUNTIME)
+@Target(value = { METHOD })
+public @interface Default {
 }

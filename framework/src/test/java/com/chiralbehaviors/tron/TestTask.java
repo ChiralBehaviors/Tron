@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Hal Hildebrand, all rights reserved.
+ * Copyright (c) ChiralBehaviors LLC, all rights reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.hellblazer.tron;
+package com.chiralbehaviors.tron;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -22,9 +22,9 @@ import static org.mockito.Mockito.verify;
 import org.junit.Test;
 import org.mockito.internal.verification.Times;
 
-import com.hellblazer.tron.examples.task.Task;
-import com.hellblazer.tron.examples.task.TaskFsm;
-import com.hellblazer.tron.examples.task.TaskModel;
+import com.chiralbehaviors.tron.examples.task.Task;
+import com.chiralbehaviors.tron.examples.task.TaskFsm;
+import com.chiralbehaviors.tron.examples.task.TaskModel;
 
 /**
  * 

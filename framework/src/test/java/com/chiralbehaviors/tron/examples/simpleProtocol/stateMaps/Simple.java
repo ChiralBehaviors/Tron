@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Hal Hildebrand, all rights reserved.
+ * Copyright (c) 2013 ChiralBehaviors LLC, all rights reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.hellblazer.tron.examples.simpleProtocol.stateMaps;
+package com.chiralbehaviors.tron.examples.simpleProtocol.stateMaps;
 
-import com.hellblazer.tron.Fsm;
-import com.hellblazer.tron.examples.simpleProtocol.BufferHandler;
-import com.hellblazer.tron.examples.simpleProtocol.SimpleFsm;
-import com.hellblazer.tron.examples.simpleProtocol.SimpleProtocol;
+import com.chiralbehaviors.tron.Fsm;
+import com.chiralbehaviors.tron.examples.simpleProtocol.BufferHandler;
+import com.chiralbehaviors.tron.examples.simpleProtocol.SimpleFsm;
+import com.chiralbehaviors.tron.examples.simpleProtocol.SimpleProtocol;
 
 /**
  * 

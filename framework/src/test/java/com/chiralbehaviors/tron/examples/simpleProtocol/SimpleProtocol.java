@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Hal Hildebrand, all rights reserved.
+ * Copyright (c) ChiralBehaviors LLC, all rights reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.hellblazer.tron;
-
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+package com.chiralbehaviors.tron.examples.simpleProtocol;
 
 /**
- * The annotation marking a method as the default transition for the state. The
- * method must take no arguments
  * 
  * @author hhildebrand
  * 
  */
-@Retention(value = RUNTIME)
-@Target(value = { METHOD })
-public @interface Default {
+public interface SimpleProtocol {
+    void ackReceived();
+
+    void awaitAck();
+
+    void enableSend();
+
+    void establishClientSession();
+
+    void sendGoodbye();
+
+    void setHandler(BufferHandler handler);
+
+    void transmitMessage(String message);
 }

@@ -1,7 +1,7 @@
-package com.hellblazer.tron.examples.simpleProtocol.impl;
+package com.chiralbehaviors.tron.examples.simpleProtocol.impl;
 
-import com.hellblazer.tron.examples.simpleProtocol.BufferHandler;
-import com.hellblazer.tron.examples.simpleProtocol.SimpleProtocol;
+import com.chiralbehaviors.tron.examples.simpleProtocol.BufferHandler;
+import com.chiralbehaviors.tron.examples.simpleProtocol.SimpleProtocol;
 
 public class SimpleProtocolImpl implements SimpleProtocol {
     private BufferHandler handler;

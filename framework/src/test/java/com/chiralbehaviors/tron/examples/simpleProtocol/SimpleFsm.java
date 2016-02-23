@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Hal Hildebrand, all rights reserved.
+ * Copyright (c) 2013 ChiralBehaviors LLC, all rights reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.hellblazer.tron.examples.task;
+package com.chiralbehaviors.tron.examples.simpleProtocol;
 
 /**
  * 
  * @author hhildebrand
  * 
  */
-public interface TaskFsm {
-    TaskFsm block();
+public interface SimpleFsm {
+    SimpleFsm accepted(BufferHandler buffer);
 
-    TaskFsm delete();
+    SimpleFsm closing();
 
-    TaskFsm done();
+    SimpleFsm connected(BufferHandler buffer);
 
-    TaskFsm start(long timeslice);
+    SimpleFsm protocolError();
 
-    TaskFsm stop();
+    SimpleFsm readError();
 
-    TaskFsm stopped();
+    SimpleFsm readReady();
 
-    TaskFsm suspended();
+    SimpleFsm sendGoodbye();
 
-    TaskFsm unblock();
+    SimpleFsm transmitMessage(String message);
+
+    SimpleFsm writeError();
+
+    SimpleFsm writeReady();
 }

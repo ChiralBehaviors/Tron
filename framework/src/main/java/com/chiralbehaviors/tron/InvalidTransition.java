@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Hal Hildebrand, all rights reserved.
+ * Copyright (c) 2013 ChiralBehaviors LLC, all rights reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.hellblazer.tron.examples.task;
+package com.chiralbehaviors.tron;
 
 /**
+ * The exception indicating that the transition is invalid for the current state
+ * of the Fsm
  * 
  * @author hhildebrand
  * 
  */
-public interface TaskModel {
-    void blockTask();
+public class InvalidTransition extends RuntimeException {
 
-    void continueTask();
+    private static final long serialVersionUID = 1L;
 
-    void releaseResources();
+    public InvalidTransition() {
+    }
 
-    void startSliceTimer(long timeslice);
-
-    void stopSliceTimer();
-
-    void stopTask();
-
-    void suspendTask();
+    public InvalidTransition(String msg) {
+        super(msg);
+    }
 }

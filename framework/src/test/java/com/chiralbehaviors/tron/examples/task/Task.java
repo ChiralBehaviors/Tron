@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Hal Hildebrand, all rights reserved.
+ * Copyright (c) 2013 ChiralBehaviors LLC, all rights reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.hellblazer.tron.examples.task;
+package com.chiralbehaviors.tron.examples.task;
 
-import com.hellblazer.tron.Exit;
-import com.hellblazer.tron.Fsm;
+import com.chiralbehaviors.tron.Exit;
+import com.chiralbehaviors.tron.Fsm;
 
 /**
  * 

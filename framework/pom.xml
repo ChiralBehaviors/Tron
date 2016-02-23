@@ -2,15 +2,15 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.hellblazer</groupId>
+		<groupId>com.chiralbehaviors</groupId>
 		<artifactId>tron.app</artifactId>
-		<version>0.0.4-SNAPSHOT</version>
+		<version>0.0.4</version>
 	</parent>
 	<artifactId>tron</artifactId>
 	<name>Tron</name>
 	<description>A framework for creating finite state machines</description>
 
-	<url>https://github.com/Hellblazer/Tron</url>
+	<url>https://github.com/ChiralBehaviors/Tron</url>
 
 	<licenses>
 		<license>
@@ -21,7 +21,7 @@
 	</licenses>
 
 	<scm>
-		<url>https://github.com/Hellblazer/Tron.git</url>
+		<url>https://github.com/ChiralBehaviors/Tron.git</url>
 	</scm>
 
 	<dependencies>

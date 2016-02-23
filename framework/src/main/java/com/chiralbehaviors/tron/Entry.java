@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Hal Hildebrand, all rights reserved.
+ * Copyright (c) 2013 ChiralBehaviors LLC, all rights reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,31 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.hellblazer.tron.examples.simpleProtocol;
+package com.chiralbehaviors.tron;
+
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
+ * The annotation indicating the method is an entry action for the enclosing
+ * state enumeration.
  * 
  * @author hhildebrand
  * 
  */
-public interface SimpleFsm {
-    SimpleFsm accepted(BufferHandler buffer);
-
-    SimpleFsm closing();
-
-    SimpleFsm connected(BufferHandler buffer);
-
-    SimpleFsm protocolError();
-
-    SimpleFsm readError();
-
-    SimpleFsm readReady();
-
-    SimpleFsm sendGoodbye();
-
-    SimpleFsm transmitMessage(String message);
-
-    SimpleFsm writeError();
-
-    SimpleFsm writeReady();
+@Retention(value = RUNTIME)
+@Target(value = { METHOD })
+public @interface Entry {
 }
