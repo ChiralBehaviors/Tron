@@ -15,6 +15,8 @@
  */
 package com.chiralbehaviors.tron.examples.simpleProtocol.stateMaps;
 
+import static com.chiralbehaviors.tron.Fsm.thisFsm;
+
 import com.chiralbehaviors.tron.Fsm;
 import com.chiralbehaviors.tron.examples.simpleProtocol.BufferHandler;
 import com.chiralbehaviors.tron.examples.simpleProtocol.SimpleFsm;
@@ -46,14 +48,14 @@ public enum Simple implements SimpleFsm {
         @Override
         public SimpleFsm accepted(BufferHandler handler) {
             context().setHandler(handler);
-            fsm().push(SimpleServer.ACCEPTED);
+            thisFsm().push(SimpleServer.ACCEPTED);
             return CONNECTED;
         }
 
         @Override
         public SimpleFsm connected(BufferHandler handler) {
             context().setHandler(handler);
-            fsm().push(SimpleClient.CONNECTED);
+            thisFsm().push(SimpleClient.CONNECTED);
             return CONNECTED;
         }
     },
@@ -62,13 +64,7 @@ public enum Simple implements SimpleFsm {
     };
 
     private static SimpleProtocol context() {
-        SimpleProtocol context = Fsm.thisContext();
-        return context;
-    }
-
-    private static Fsm<SimpleProtocol, SimpleFsm> fsm() {
-        Fsm<SimpleProtocol, SimpleFsm> fsm = Fsm.thisFsm();
-        return fsm;
+        return Fsm.thisFsm().getContext();
     }
 
     @Override
