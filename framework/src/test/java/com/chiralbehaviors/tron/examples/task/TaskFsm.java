@@ -15,25 +15,43 @@
  */
 package com.chiralbehaviors.tron.examples.task;
 
+import com.chiralbehaviors.tron.FsmExecutor;
+
 /**
  * 
  * @author hhildebrand
  * 
  */
-public interface TaskFsm {
-    TaskFsm block();
+public interface TaskFsm extends FsmExecutor<TaskModel, TaskFsm> {
+    default TaskFsm block() {
+        return null; // loopback transition
+    }
 
-    TaskFsm delete();
+    default TaskFsm delete() {
+        return null; // loopback transition
+    }
 
-    TaskFsm done();
+    default TaskFsm done() {
+        return null; // loopback transition
+    }
 
-    TaskFsm start(long timeslice);
+    default TaskFsm start(long timeslice) {
+        return null; // loopback transition
+    }
 
-    TaskFsm stop();
+    default TaskFsm stop() {
+        return null; // loopback transition
+    }
 
-    TaskFsm stopped();
+    default TaskFsm stopped() {
+        return null; // loopback transition
+    }
 
-    TaskFsm suspended();
+    default TaskFsm suspended() {
+        return null; // loopback transition
+    }
 
-    TaskFsm unblock();
+    default TaskFsm unblock() {
+        return null; // loopback transition
+    }
 }

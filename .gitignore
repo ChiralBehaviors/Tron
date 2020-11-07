@@ -1,11 +1,10 @@
 **/target
-<<<<<<< HEAD
 **/.classpath
 **/.project
 **/.settings
-**/src/site
-/target
-/.classpath
-/.project
-/.settings
-/src/site 
+**/src/site 
+**/.classpath
+**/.project
+**/.settings
+**/src/site 
+**/.DS_Store

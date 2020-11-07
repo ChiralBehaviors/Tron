@@ -15,11 +15,11 @@
  */
 package com.chiralbehaviors.tron;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.internal.verification.Times;
 
 import com.chiralbehaviors.tron.examples.task.Task;
@@ -36,8 +36,7 @@ public class TestTask {
     public void testIt() {
         long timeslice = 100;
         TaskModel model = mock(TaskModel.class);
-        Fsm<TaskModel, TaskFsm> fsm = Fsm.construct(model, TaskFsm.class,
-                                                    Task.Suspended, false);
+        Fsm<TaskModel, TaskFsm> fsm = Fsm.construct(model, TaskFsm.class, Task.Suspended, false);
         TaskFsm transitions = fsm.getTransitions();
         assertEquals(Task.Suspended, fsm.getCurrentState());
         transitions.start(timeslice);
@@ -62,6 +61,10 @@ public class TestTask {
         transitions.stopped();
         assertEquals(Task.Stopped, fsm.getCurrentState());
         transitions.delete();
+        assertEquals(Task.Deleted, fsm.getCurrentState());
+        transitions.delete();
+        assertEquals(Task.Deleted, fsm.getCurrentState());
+        transitions.stop();
         assertEquals(Task.Deleted, fsm.getCurrentState());
     }
 }
