@@ -332,6 +332,9 @@ public final class Fsm<Context, Transitions> {
      * @return
      */
     private Object fire(Method t, Object[] arguments) {
+        if (t == null) {
+            return null;
+        }
         if (sync != null) {
             try {
                 sync.lockInterruptibly();
@@ -403,7 +406,10 @@ public final class Fsm<Context, Transitions> {
                     e);
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof InvalidTransition) {
-                throw (InvalidTransition) e.getTargetException();
+                if (log.isTraceEnabled()) {
+                    log.trace(String.format("Invalid transition %s on state %s", transition, prettyPrint(current)));
+                }
+                throw new InvalidTransition(prettyPrint(stateTransition) + " -> " + prettyPrint(current), e);
             }
             throw new IllegalStateException(String.format("Unable to invoke transition %s on state %s",
                                                           prettyPrint(stateTransition), prettyPrint(current)),
@@ -462,7 +468,7 @@ public final class Fsm<Context, Transitions> {
     private void normalTransition(Enum<?> nextState) {
         if (nextState == null) { // internal loopback transition
             if (log.isTraceEnabled()) {
-                log.trace(String.format("Internal loopback transition to state %s", prettyPrint(nextState)));
+                log.trace(String.format("Internal loopback transition to state %s", prettyPrint(current)));
             }
             return;
         }
@@ -510,16 +516,20 @@ public final class Fsm<Context, Transitions> {
 
     private String prettyPrint(Method transition) {
         StringBuilder builder = new StringBuilder();
-        builder.append(transition.getName());
-        builder.append('(');
-        Class<?>[] parameters = transition.getParameterTypes();
-        for (int i = 0; i < parameters.length; i++) {
-            builder.append(parameters[i].getSimpleName());
-            if (i != parameters.length - 1) {
-                builder.append(", ");
+        if (transition != null) {
+            builder.append(transition.getName());
+            builder.append('(');
+            Class<?>[] parameters = transition.getParameterTypes();
+            for (int i = 0; i < parameters.length; i++) {
+                builder.append(parameters[i].getSimpleName());
+                if (i != parameters.length - 1) {
+                    builder.append(", ");
+                }
             }
+            builder.append(')');
+        } else {
+            builder.append("loopback");
         }
-        builder.append(')');
         return builder.toString();
     }
 

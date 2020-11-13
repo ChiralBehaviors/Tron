@@ -32,4 +32,8 @@ public class InvalidTransition extends RuntimeException {
     public InvalidTransition(String msg) {
         super(msg);
     }
+
+    public InvalidTransition(String string, Throwable e) {
+        super(string, e);
+    }
 }
